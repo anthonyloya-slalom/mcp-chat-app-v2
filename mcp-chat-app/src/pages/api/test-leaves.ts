@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const MCP_API_URL = 'https://mcp.parsed.xyz/mcp-sql/sse';
+const MCP_API_URL = 'https://31cb41958507.ngrok-free.app/sse';
 
 async function initMCPSession(): Promise<string> {
   const initResponse = await fetch(MCP_API_URL, {
@@ -40,19 +40,20 @@ async function initMCPSession(): Promise<string> {
   return sessionId;
 }
 
-// Test endpoint to directly query ProposalCreated table
+// Test endpoint to directly query leave management data
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log('\n========== PROPOSAL TEST STARTING ==========');
+  console.log('\n========== LEAVE DATA TEST STARTING ==========');
   
   try {
     // Initialize session
     const sessionId = await initMCPSession();
     console.log('Session ID:', sessionId);
-    // Test 1: Try execute_sql_query with explicit column selection
-    console.log('\nTest 1: execute_sql_query with explicit columns');
+    
+    // Test 1: Query leaves data
+    console.log('\nTest 1: query_leaves_data');
     const test1Response = await fetch(MCP_API_URL, {
       method: 'POST',
       headers: {
@@ -64,11 +65,11 @@ export default async function handler(
         jsonrpc: "2.0",
         method: "tools/call",
         params: {
-          name: "execute_sql_query",
+          name: "query_leaves_data",
           arguments: {
-            query: "SELECT proposalId, proposer, description, block_timestamp FROM governance_beta.ProposalCreated_bd5e0 ORDER BY block_timestamp DESC LIMIT 3",
-            database: "data",
-            limit: 3
+            filters: {
+              leave_type: "caregiving"
+            }
           }
         },
         id: Date.now()
@@ -78,8 +79,8 @@ export default async function handler(
     const test1Text = await test1Response.text();
     console.log('Test 1 Response:', test1Text.substring(0, 1000));
     
-    // Test 2: Try get_table_details
-    console.log('\nTest 2: get_table_details');
+    // Test 2: Analyze caregiving leaves
+    console.log('\nTest 2: analyze_caregiving_leaves');
     const test2Response = await fetch(MCP_API_URL, {
       method: 'POST',
       headers: {
@@ -91,11 +92,8 @@ export default async function handler(
         jsonrpc: "2.0",
         method: "tools/call",
         params: {
-          name: "get_table_details",
-          arguments: {
-            table_name: "ProposalCreated_bd5e0",
-            schema_name: "governance_beta"
-          }
+          name: "analyze_caregiving_leaves",
+          arguments: {}
         },
         id: Date.now()
       })
@@ -104,8 +102,8 @@ export default async function handler(
     const test2Text = await test2Response.text();
     console.log('Test 2 Response:', test2Text.substring(0, 1000));
     
-    // Test 3: Try smart_query
-    console.log('\nTest 3: smart_query');
+    // Test 3: Get leave duration statistics
+    console.log('\nTest 3: leave_duration_stats');
     const test3Response = await fetch(MCP_API_URL, {
       method: 'POST',
       headers: {
@@ -117,11 +115,9 @@ export default async function handler(
         jsonrpc: "2.0",
         method: "tools/call",
         params: {
-          name: "smart_query",
+          name: "leave_duration_stats",
           arguments: {
-            search_term: "ProposalCreated",
-            limit: 3,
-            apply_decimals: false
+            leave_type: "caregiving"
           }
         },
         id: Date.now()
@@ -131,26 +127,26 @@ export default async function handler(
     const test3Text = await test3Response.text();
     console.log('Test 3 Response:', test3Text.substring(0, 1000));
     
-    // Parse responses to check for description field
+    // Parse responses to check for leave data
     const results = {
       test1: { 
-        hasDescription: test1Text.includes('description'),
+        hasLeaveData: test1Text.includes('leave') || test1Text.includes('caregiving'),
         response: test1Text.substring(0, 500)
       },
       test2: { 
-        hasDescription: test2Text.includes('description'),
+        hasPatternData: test2Text.includes('intermittent') || test2Text.includes('continuous'),
         response: test2Text.substring(0, 500)
       },
       test3: { 
-        hasDescription: test3Text.includes('description'),
+        hasDurationData: test3Text.includes('duration') || test3Text.includes('days'),
         response: test3Text.substring(0, 500)
       }
     };
     
     console.log('\n========== TEST RESULTS ==========');
-    console.log('Test 1 (execute_sql_query) has description:', results.test1.hasDescription);
-    console.log('Test 2 (get_table_details) has description:', results.test2.hasDescription);
-    console.log('Test 3 (smart_query) has description:', results.test3.hasDescription);
+    console.log('Test 1 (query_leaves_data) has leave data:', results.test1.hasLeaveData);
+    console.log('Test 2 (analyze_caregiving_leaves) has pattern data:', results.test2.hasPatternData);
+    console.log('Test 3 (leave_duration_stats) has duration data:', results.test3.hasDurationData);
     console.log('==================================\n');
     
     res.status(200).json({

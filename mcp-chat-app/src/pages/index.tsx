@@ -14,7 +14,9 @@ import {
   Loader2,
   Plus,
   Settings,
-  History
+  History,
+  Bot,
+  User
 } from 'lucide-react';
 
 interface ExecutionStep {
@@ -313,26 +315,26 @@ export default function Home() {
   const exampleQueries = [
     { 
       icon: <Database className="w-4 h-4" />, 
-      text: 'Find the top 3 delegates by voting power',
-      description: 'Query delegate rankings'
+      text: 'How common is it to have intermittent vs continuous caregiving leaves?',
+      description: 'Analyze caregiving leave patterns'
     },
     { 
       icon: <FileSearch className="w-4 h-4" />, 
-      text: 'What are the latest proposals executed?',
-      description: 'View recent governance proposals'
+      text: 'What is the typical duration of a caregiving leave for us?',
+      description: 'Get duration statistics'
     },
     { 
       icon: <Search className="w-4 h-4" />, 
-      text: 'Show me the largest deposits this week',
-      description: 'Track deposit activity'
+      text: 'How are intermittent vs continuous leaves trending over the past year?',
+      description: 'Analyze leave trends'
     },
   ];
   
   return (
-    <div className="flex flex-col h-screen bg-gray-950 text-gray-100">
+    <div className="flex flex-col h-screen bg-gradient-to-b from-gray-950 via-orange-950/20 to-gray-950">
       <Head>
-        <title>MCP SQL Chat</title>
-        <meta name="description" content="Advanced SQL chat with Model Context Protocol" />
+        <title>MCP Chat Assistant</title>
+        <meta name="description" content="Advanced chat with Model Context Protocol" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       
@@ -340,44 +342,47 @@ export default function Home() {
         position="top-right"
         toastOptions={{
           style: {
-            background: '#1f2937',
-            color: '#f3f4f6',
-            border: '1px solid #374151',
+            background: 'linear-gradient(to right, #7c2d12, #ea580c)',
+            color: '#e2e8f0',
+            border: '1px solid rgba(241, 93, 74, 0.2)',
+            backdropFilter: 'blur(10px)',
           },
         }}
       />
       
       {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900/95 backdrop-blur">
-        <div className="container mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-white" />
+      <header className="relative z-10 bg-black/40 backdrop-blur-xl border-b border-orange-500/10">
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-600/5 via-transparent to-red-600/5"></div>
+        <div className="relative container mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-red-600 rounded-xl blur-lg opacity-60"></div>
+              <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-lg">
+                <Bot className="w-6 h-6 text-white" />
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-base font-semibold">MCP Assistant</h1>
-              <span className="text-xs text-gray-500">
-                Claude-style UI
-              </span>
+            <div>
+              <h1 className="text-lg font-semibold text-white">MCP Assistant</h1>
+              <p className="text-xs text-orange-300/60">Powered by Claude & Snowflake</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
-            <button className="p-2 text-gray-400 hover:text-gray-200 transition-colors">
-              <History className="w-4 h-4" />
+          <div className="flex items-center gap-2">
+            <button className="p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+              <History className="w-5 h-5" />
             </button>
-            <button className="p-2 text-gray-400 hover:text-gray-200 transition-colors">
-              <Settings className="w-4 h-4" />
+            <button className="p-2.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-all">
+              <Settings className="w-5 h-5" />
             </button>
             <button
               onClick={() => {
                 clearMessages();
                 setExecutionSteps(new Map());
               }}
-              className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-md bg-gray-800 hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-orange-600/20 hover:bg-orange-600/30 text-orange-300 hover:text-white transition-all backdrop-blur-sm border border-orange-500/20"
             >
-              <Plus className="w-3.5 h-3.5" />
-              New chat
+              <Plus className="w-4 h-4" />
+              New Chat
             </button>
           </div>
         </div>
@@ -388,45 +393,104 @@ export default function Home() {
         <div className="container mx-auto max-w-4xl px-4 py-6">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] py-12">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-6">
-                <Sparkles className="w-8 h-8 text-white" />
+              <div className="relative mb-8">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-red-600 rounded-2xl blur-2xl opacity-40"></div>
+                <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-2xl">
+                  <Sparkles className="w-10 h-10 text-white" />
+                </div>
               </div>
-              <h2 className="text-2xl font-semibold mb-2">Welcome to MCP Assistant</h2>
-              <p className="text-gray-400 text-center max-w-md mb-8">
-                Query your database using natural language with Claude-style UI. I'll provide clear summaries and show you the data.
+              <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                Welcome to MCP Assistant
+              </h2>
+              <p className="text-gray-400 text-center max-w-md mb-10">
+                Query your Snowflake database using natural language. I'll help analyze your leave data with clear insights.
               </p>
               
               {/* Example Queries */}
-              <div className="w-full max-w-2xl space-y-2">
-                <p className="text-xs text-gray-500 mb-3">Try an example</p>
+              <div className="w-full max-w-2xl space-y-3">
+                <p className="text-sm text-orange-400/60 mb-4 font-medium">Try an example:</p>
                 {exampleQueries.map((query, index) => (
                   <button
                     key={index}
                     onClick={() => handleSendMessage(query.text)}
-                    className="w-full flex items-center gap-3 p-3 rounded-lg border border-gray-800 hover:bg-gray-900/50 transition-all group text-left"
+                    className="w-full flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-orange-500/20 hover:border-orange-500/40 transition-all group"
                   >
-                    <div className="p-2 rounded-lg bg-gray-800 group-hover:bg-gray-700">
+                    <div className="p-2.5 rounded-lg bg-gradient-to-br from-orange-600/20 to-red-600/20 group-hover:from-orange-600/30 group-hover:to-red-600/30 transition-all">
                       {query.icon}
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{query.text}</p>
-                      <p className="text-xs text-gray-500">{query.description}</p>
+                    <div className="flex-1 text-left">
+                      <p className="text-sm font-medium text-gray-200">{query.text}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{query.description}</p>
                     </div>
                   </button>
                 ))}
               </div>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-6">
               {messages.map((message, index) => (
-                <ClaudeMessageEnhanced
-                  key={message.id}
-                  message={message}
-                  isStreaming={isProcessing && index === messages.length - 1}
-                  executionSteps={
-                    message.role === 'assistant' ? executionSteps.get(message.id) : undefined
-                  }
-                />
+                <div key={message.id} className={cn(
+                  "flex gap-4",
+                  message.role === 'user' ? 'justify-end' : 'justify-start'
+                )}>
+                  {message.role === 'assistant' && (
+                    <div className="flex-shrink-0">
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-red-600 rounded-xl blur opacity-60"></div>
+                        <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center shadow-lg">
+                          <Bot className="w-6 h-6 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className={cn(
+                    "max-w-[70%] rounded-2xl px-5 py-4 shadow-xl",
+                    message.role === 'user' 
+                      ? "bg-gradient-to-r from-[#F15D4A] to-orange-600 text-white"
+                      : "bg-white/10 backdrop-blur-lg text-gray-100 border border-orange-500/20"
+                  )}>
+                    <div className="whitespace-pre-wrap break-words">
+                      {message.content || (isProcessing && index === messages.length - 1 ? (
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span className="text-purple-300">Thinking...</span>
+                        </div>
+                      ) : '')}
+                    </div>
+                    
+                    {/* Show execution steps if available */}
+                    {message.role === 'assistant' && executionSteps.get(message.id) && executionSteps.get(message.id)!.length > 0 && (
+                      <details className="mt-4 text-xs">
+                        <summary className="cursor-pointer text-orange-300 hover:text-orange-200 transition-colors">
+                          View processing steps ({executionSteps.get(message.id)!.length})
+                        </summary>
+                        <div className="mt-3 space-y-2">
+                          {executionSteps.get(message.id)!.map((step, i) => (
+                            <div key={i} className="pl-3 border-l-2 border-orange-500/30 text-gray-300">
+                              {step.type === 'thought' && <span>💭 {step.thought}</span>}
+                              {step.type === 'action' && (
+                                <span>🔧 {step.tool} 
+                                  {step.status === 'running' && ' (running...)'}
+                                  {step.status === 'completed' && ' ✓'}
+                                </span>
+                              )}
+                              {step.type === 'result' && <span className="text-green-400">📊 Result received</span>}
+                            </div>
+                          ))}
+                        </div>
+                      </details>
+                    )}
+                  </div>
+                  
+                  {message.role === 'user' && (
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center shadow-lg border border-gray-700">
+                        <User className="w-6 h-6 text-gray-300" />
+                      </div>
+                    </div>
+                  )}
+                </div>
               ))}
               <div ref={messagesEndRef} />
             </div>
@@ -435,8 +499,9 @@ export default function Home() {
       </div>
       
       {/* Input Area */}
-      <div className="border-t border-gray-800 bg-gray-900/95 backdrop-blur">
-        <div className="container mx-auto max-w-4xl px-4 py-4">
+      <div className="relative z-10 bg-black/40 backdrop-blur-xl border-t border-orange-500/10">
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-600/5 via-transparent to-red-600/5"></div>
+        <div className="relative container mx-auto max-w-4xl px-4 py-5">
           <div className="relative">
             <textarea
               ref={inputRef}
@@ -448,16 +513,18 @@ export default function Home() {
                   handleSendMessage(inputValue);
                 }
               }}
-              placeholder="Message MCP Assistant..."
+              placeholder="Ask about your leave data..."
               disabled={isProcessing}
               rows={1}
               className={cn(
-                "w-full px-4 py-3 pr-12 bg-gray-800 rounded-lg",
-                "placeholder:text-gray-500",
-                "focus:outline-none focus:ring-2 focus:ring-purple-500",
+                "w-full px-5 py-3.5 pr-14",
+                "bg-white/10 backdrop-blur-lg",
+                "text-white placeholder:text-gray-500",
+                "rounded-xl border border-orange-500/20",
+                "focus:outline-none focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
-                "resize-none min-h-[48px] max-h-[200px]",
-                "text-sm text-gray-100"
+                "resize-none min-h-[52px] max-h-[200px]",
+                "text-sm"
               )}
               style={{
                 height: 'auto',
@@ -468,27 +535,28 @@ export default function Home() {
               onClick={() => handleSendMessage(inputValue)}
               disabled={isProcessing || !inputValue.trim()}
               className={cn(
-                "absolute right-2 bottom-2 p-2 rounded-md",
-                "transition-all",
+                "absolute right-3 bottom-3 p-2.5 rounded-lg",
+                "transition-all duration-200",
                 isProcessing || !inputValue.trim()
                   ? "text-gray-600 cursor-not-allowed"
-                  : "text-purple-400 hover:bg-gray-700"
+                  : "text-white bg-gradient-to-r from-[#F15D4A] to-orange-600 hover:from-orange-600 hover:to-[#F15D4A] shadow-lg"
               )}
             >
               {isProcessing ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <Send className="w-4 h-4" />
+                <Send className="w-5 h-5" />
               )}
             </button>
           </div>
-          <div className="flex items-center justify-between mt-2">
+          <div className="flex items-center justify-between mt-3">
             <p className="text-xs text-gray-500">
-              Press Enter to send, Shift+Enter for new line
+              Press Enter to send • Shift+Enter for new line
             </p>
-            <p className="text-xs text-gray-500">
-              {currentProvider === 'claude' ? 'Claude 3 Opus' : 'GPT-4'}
-            </p>
+            <div className="flex items-center gap-2 text-xs text-orange-400/60">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              Connected to Snowflake
+            </div>
           </div>
         </div>
       </div>

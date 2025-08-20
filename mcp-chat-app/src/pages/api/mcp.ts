@@ -1,19 +1,52 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ChatAnthropic } from '@langchain/anthropic';
 
-const MCP_API_URL = 'https://mcp.parsed.xyz/mcp-sql/sse';
+const MCP_BASE_URL = 'https://b05c5855ce70.ngrok-free.app';
+const MCP_SSE_URL = `${MCP_BASE_URL}/sse`;
 
 // MCP session management
 let globalSessionId: string | null = null;
+let globalMessageUrl: string | null = null;
 
-async function initMCPSession(): Promise<string> {
-  if (globalSessionId) return globalSessionId;
+async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string }> {
+  if (globalSessionId && globalMessageUrl) {
+    return { sessionId: globalSessionId, messageUrl: globalMessageUrl };
+  }
   
-  const initResponse = await fetch(MCP_API_URL, {
+  // GET the SSE endpoint to get session info
+  const sseResponse = await fetch(MCP_SSE_URL, {
+    method: 'GET',
+    headers: {
+      'Accept': 'text/event-stream',
+      'ngrok-skip-browser-warning': 'true'
+    },
+  });
+  
+  const sseText = await sseResponse.text();
+  const lines = sseText.split('\n');
+  
+  for (const line of lines) {
+    if (line.startsWith('data: ')) {
+      const endpoint = line.slice(6).trim();
+      if (endpoint.startsWith('/messages/')) {
+        globalMessageUrl = `${MCP_BASE_URL}${endpoint}`;
+        const match = endpoint.match(/session_id=([^&]+)/);
+        globalSessionId = match ? match[1] : `session-${Date.now()}`;
+        break;
+      }
+    }
+  }
+  
+  if (!globalMessageUrl) {
+    globalMessageUrl = `${MCP_BASE_URL}/messages/?session_id=${Date.now()}`;
+    globalSessionId = `session-${Date.now()}`;
+  }
+  
+  // Initialize the session
+  await fetch(globalMessageUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'text/event-stream',
     },
     body: JSON.stringify({
       jsonrpc: "2.0",
@@ -27,14 +60,11 @@ async function initMCPSession(): Promise<string> {
     })
   });
   
-  globalSessionId = initResponse.headers.get('mcp-session-id') || `session-${Date.now()}`;
-  
-  await fetch(MCP_API_URL, {
+  // Send initialized notification
+  await fetch(globalMessageUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'text/event-stream',
-      'mcp-session-id': globalSessionId
     },
     body: JSON.stringify({
       jsonrpc: "2.0",
@@ -43,7 +73,7 @@ async function initMCPSession(): Promise<string> {
     })
   });
   
-  return globalSessionId;
+  return { sessionId: globalSessionId, messageUrl: globalMessageUrl };
 }
 
 async function callMCPTool(toolName: string, args: any): Promise<any> {
@@ -52,7 +82,7 @@ async function callMCPTool(toolName: string, args: any): Promise<any> {
   console.log(`  [MCP] Arguments:`, JSON.stringify(args, null, 2));
   console.log(`  [MCP] Timestamp: ${new Date().toISOString()}`);
   
-  const sessionId = await initMCPSession();
+  const { sessionId, messageUrl } = await initMCPSession();
   console.log(`  [MCP] Session ID: ${sessionId}`);
   
   const requestBody = {
@@ -63,14 +93,13 @@ async function callMCPTool(toolName: string, args: any): Promise<any> {
   };
   
   console.log(`  [MCP] Full Request Body:`, JSON.stringify(requestBody, null, 2));
-  console.log(`  [MCP] Sending to: ${MCP_API_URL}`);
+  console.log(`  [MCP] Sending to: ${messageUrl}`);
   
-  const response = await fetch(MCP_API_URL, {
+  const response = await fetch(messageUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'text/event-stream',
-      'mcp-session-id': sessionId
+      'ngrok-skip-browser-warning': 'true'
     },
     body: JSON.stringify(requestBody)
   });
@@ -81,38 +110,25 @@ async function callMCPTool(toolName: string, args: any): Promise<any> {
   const text = await response.text();
   console.log(`  [MCP] Raw Response (first 500 chars):`, text.substring(0, 500));
   
-  const lines = text.split('\n');
-  console.log(`  [MCP] Response has ${lines.length} lines`);
-  
-  let resultFound = false;
-  for (const line of lines) {
-    if (line.startsWith('data: ')) {
-      try {
-        const jsonStr = line.slice(6);
-        console.log(`  [MCP] Parsing line:`, jsonStr.substring(0, 200));
-        const data = JSON.parse(jsonStr);
-        
-        if (data.result) {
-          console.log(`  [MCP] ✅ RESULT FOUND:`, JSON.stringify(data.result, null, 2).substring(0, 1000));
-          resultFound = true;
-          return data.result;
-        }
-        if (data.error) {
-          console.log(`  [MCP] ❌ ERROR:`, data.error);
-          throw new Error(data.error.message);
-        }
-      } catch (e) {
-        console.log(`  [MCP] Failed to parse line:`, e);
-        continue;
-      }
+  try {
+    const data = JSON.parse(text);
+    
+    if (data.result) {
+      console.log(`  [MCP] ✅ RESULT FOUND:`, JSON.stringify(data.result, null, 2).substring(0, 1000));
+      console.log(`  ========================================================\n`);
+      return data.result;
     }
-  }
-  
-  if (!resultFound) {
-    console.log(`  [MCP] ❌ NO RESULT FOUND IN RESPONSE`);
+    if (data.error) {
+      console.log(`  [MCP] ❌ ERROR:`, data.error);
+      console.log(`  ========================================================\n`);
+      throw new Error(data.error.message || JSON.stringify(data.error));
+    }
+  } catch (e) {
+    console.log(`  [MCP] Failed to parse response:`, e);
     console.log(`  [MCP] Full response text:`, text);
   }
   
+  console.log(`  [MCP] ❌ NO RESULT FOUND IN RESPONSE`);
   console.log(`  ========================================================\n`);
   throw new Error('No result from MCP tool');
 }
@@ -155,23 +171,26 @@ export default async function handler(
     let conversationHistory = '';
     
     // System prompt for dynamic discovery - NO HARDCODING
-    const systemPrompt = `You are a database assistant. You MUST use real tools to get real data.
+    const systemPrompt = `You are a leave management assistant helping HR personnel manage employee leaves. You MUST use real tools to get real data.
 
 AVAILABLE TOOLS:
-⚠️ CRITICAL: Only query tables that are in the registry for security!
+⚠️ CRITICAL: Query the DEV.TEMP.LEAVES_SLALOM view for leave management data!
 
-- describe_table: VERIFY table is in registry - use {"table_name": "name", "schema_name": "name"}
-  ⭐ ALWAYS use this FIRST before any table queries!
-- get_schemas: Returns all database schemas - use {} or {"include_system": false}
-- get_tables: Get tables - use {"schema_name": "name"}
-- get_columns: Get columns - use {"schema_name": "name", "table_name": "name"}  
-- smart_query: Query REGISTERED tables only - use {"search_term": "search term", "limit": 10}
-- execute_sql_query: Run SQL on REGISTERED tables - use {"query": "SELECT ...", "database": "data", "limit": 100}
-  ⚠️ Only after describe_table verification!
-- query_contract_decimals: Get token decimals - use {"contract_address": "0x...", "blockchain": "ethereum"}
-- get_table_details: Get info for REGISTERED tables - use {"table_name": "name", "schema_name": "name"}
-- find_project: Find project schemas/tables - use {"project_name": "cryptex", "limit": 20}
-- find_column: Find tables with column - use {"column_name": "proposalId", "limit": 50}
+- snowflake_query: Execute any SQL query on Snowflake database - use {"query": "SELECT ..."}
+  ⭐ Use this for custom queries on the leave data
+- query_leaves_data: Query the DEV.TEMP.LEAVES_SLALOM view for leave management data - use {"filters": {...}}
+  ⭐ BEST tool for accessing leave information!
+- analyze_caregiving_leaves: Analyze caregiving leave patterns (intermittent vs continuous) - use {}
+  ⭐ Use for understanding caregiving leave trends
+- leave_duration_stats: Get statistics on leave durations by type - use {"leave_type": "type"}
+  ⭐ Use for duration analysis by leave type
+- leave_trends: Analyze leave trends over time - use {"time_period": "period"}
+  ⭐ Use for trend analysis over time
+- list_databases: List all accessible Snowflake databases - use {}
+- list_schemas: List schemas in a Snowflake database - use {"database": "name"}
+- list_tables: List tables in a Snowflake schema - use {"database": "name", "schema": "name"}
+- describe_table: Get schema information for a Snowflake table - use {"database": "name", "schema": "name", "table": "name"}
+- get_snowflake_context: Get current Snowflake connection context - use {}
 
 ⚠️ CRITICAL: You MUST follow this EXACT format:
 
@@ -182,7 +201,7 @@ Action Input: {"param": "value"}
 Then STOP and wait for the system to provide an Observation.
 
 ❌ NEVER write "Observation:" yourself
-❌ NEVER make up data like "0x1234..." 
+❌ NEVER make up leave data or employee information 
 ❌ NEVER continue past Action Input
 ✅ ONLY write Thought, Action, Action Input then STOP
 
@@ -198,10 +217,10 @@ Thought: The system returned [analyze real data, EXTRACT TOKEN from schema names
 Action: [next_tool]
 Action Input: {"param": "value"}
 
-Example: If get_schemas returns ["cryptex_mainnet", "compound_v2", "uniswap_v3"]:
-- For cryptex_mainnet → use CTX token
-- For compound_v2 → use COMP token
-- For uniswap_v3 → use UNI token
+Example: For leave management queries:
+- Caregiving leaves can be intermittent (taken in chunks) or continuous
+- Medical leaves are tracked separately from parental leaves
+- Duration statistics help understand typical leave patterns
 
 Final answer ONLY when you have REAL data:
 Thought: I have the actual data from the database
@@ -212,48 +231,47 @@ IMPORTANT: Registry Validation Workflow
 2. ONLY proceed if table has valid registry metadata
 3. Tables without registry validation should NOT be queried
 
-For proposal queries - EXTRACT THE ACTUAL PROPOSAL DESCRIPTIONS:
+For leave queries - EXTRACT THE ACTUAL LEAVE DATA:
 
-STEP 1: Verify table: describe_table {"table_name": "ProposalCreated_bd5e0", "schema_name": "governance_beta"}
+STEP 1: Query leaves: query_leaves_data {"filters": {"leave_type": "caregiving"}}
 
-STEP 2: Get data: get_table_details {"table_name": "ProposalCreated_bd5e0", "schema_name": "governance_beta"}
+STEP 2: Analyze patterns: analyze_caregiving_leaves {}
 
 STEP 3: PARSE THE RESPONSE for actual data:
-The get_table_details response contains REAL DATA including:
-- proposalId: The proposal ID number (e.g., 149, 150, 151)
-- description: THE ACTUAL PROPOSAL TEXT - this is the full proposal content!
-- proposer: The address that created the proposal
-- block_timestamp: When it was created
+The query response contains REAL DATA including:
+- employee_id: The employee identifier
+- leave_type: Type of leave (medical, caregiving, parental)
+- leave_status: Whether intermittent or continuous
+- start_date: When the leave begins
+- end_date: When the leave ends
+- duration_days: Total days of leave
 
 STEP 4: Present the data properly:
-✅ CORRECT: "Proposal 149: ## Treasury Diversification Proposal\nThis proposal aims to..."
-❌ WRONG: "The table has a description column"
+✅ CORRECT: "Employee 12345 has a caregiving leave from 2024-01-15 to 2024-02-15 (31 days)"
+❌ WRONG: "The table has leave data"
 
 The description field contains the ACTUAL proposal text - markdown, JSON, or plain text.
 EXTRACT IT and SHOW IT to the user!
 
-IMPORTANT for token balance/voting queries:
-1. First discover schemas using get_schemas or find_project
-   - Look for project-specific schemas (e.g., "ctx" schema = Cryptex project)
-   - If you see BOTH "ctx" schema AND "governance_beta" schema → This is CRYPTEX data, use CTX token
-   - governance_beta alone doesn't indicate token - check for project schemas
-2. For accurate delegate ranking, use this OPTIMIZED approach:
+IMPORTANT for leave management queries:
+1. Always start with query_leaves_data to access the main leave view
+   - The DEV.TEMP.LEAVES_SLALOM view contains all leave information
+   - Filter by leave_type for specific types (medical, caregiving, parental)
+   - Check leave_status for intermittent vs continuous patterns
+2. For accurate leave analysis, use this OPTIMIZED approach:
    
-   EFFICIENT QUERY PATTERN for top delegates:
-   WITH latest_balances AS (
-     SELECT DISTINCT ON (delegate_column) 
-            delegate_column,
-            balance_column as raw_balance,
-            balance_column / decimal_factor as voting_power,
-            timestamp_column
-     FROM discovered_schema.discovered_table
-     ORDER BY delegate_column, timestamp_column DESC
-   )
-   SELECT delegate_column, voting_power, timestamp_column
-   FROM latest_balances
-   WHERE voting_power > 0
-   ORDER BY voting_power DESC
-   LIMIT 3;
+   EFFICIENT QUERY PATTERN for leave analysis:
+   SELECT 
+     leave_type,
+     leave_status,
+     COUNT(*) as leave_count,
+     AVG(duration_days) as avg_duration,
+     MAX(duration_days) as max_duration,
+     MIN(duration_days) as min_duration
+   FROM DEV.TEMP.LEAVES_SLALOM
+   WHERE leave_type = 'caregiving'
+   GROUP BY leave_type, leave_status
+   ORDER BY leave_count DESC;
    
    This query pattern:
    - Uses DISTINCT ON to get the latest balance for each delegate efficiently
@@ -261,32 +279,34 @@ IMPORTANT for token balance/voting queries:
    - Filters out zero balances
    - Returns top results in one query
    
-3. Token Decimal Detection - ALWAYS try these steps in order:
-   a) FIRST: Look for 'address' or 'contract_address' columns in discovered tables
-      - If found, use query_contract_decimals with that address
-      - This gives EXACT decimals for the token
-   b) FALLBACK: Infer from discovered schema/table names if no contract address
-      - Common patterns: governance tokens often use 18, stablecoins 6, BTC variants 8
-   c) LAST RESORT: Default to 18 decimals if uncertain
-4. For any governance/token queries:
-   - First use find_project or get_schemas to discover the data
-   - Look for tables with names suggesting voting/delegate/governance
-   - IMPORTANT: Check for contract address columns to get exact decimals
-   - Get LATEST balance for each address (not MAX!)
-   - Convert using discovered or inferred decimals
-5. TOKEN SYMBOL DETECTION (DYNAMIC):
-   - CRITICAL: Use describe_table tool to get full registry metadata including project name
-   - Token identification priority:
-     1. FIRST: Use describe_table to get project metadata (e.g., project: "cryptex" → CTX token)
-     2. SECOND: Check if other project-specific schemas exist (e.g., "ctx" schema → CTX token)
-     3. THIRD: Infer from schema patterns (but be careful with generic names like "governance_beta")
-   - IMPORTANT for governance queries:
-     * "governance_beta" schema is used by MULTIPLE projects
-     * MUST use describe_table or check for project-specific schemas to identify the actual project
-     * If you see "ctx" schema or Cryptex mentioned → use CTX token
-     * Don't assume "beta" in schema name means BETA token
-   - When multiple schemas exist, cross-reference to identify the project
-   - Format all final numbers with the correctly identified token symbol`;
+3. Leave Pattern Detection - ALWAYS analyze these aspects:
+   a) FIRST: Check the distribution of intermittent vs continuous leaves
+      - Use analyze_caregiving_leaves for caregiving-specific patterns
+      - This shows how employees typically take their leaves
+   b) SECOND: Examine duration statistics by leave type
+      - Use leave_duration_stats to understand typical leave lengths
+      - Compare across different leave types
+   c) THIRD: Look at trends over time
+      - Use leave_trends to see if patterns are changing
+4. For any leave management queries:
+   - First use query_leaves_data to access the main leave view
+   - Filter by specific criteria (leave_type, dates, status)
+   - IMPORTANT: Understand the difference between intermittent and continuous
+   - Analyze patterns to provide insights
+   - Use specialized tools for deeper analysis
+5. KEY LEAVE MANAGEMENT INSIGHTS:
+   - CRITICAL: Understand the context of caregiving vs medical vs parental leaves
+   - Leave status priorities:
+     1. FIRST: Determine if leave is intermittent or continuous
+     2. SECOND: Calculate total duration and impact
+     3. THIRD: Compare to typical patterns for that leave type
+   - IMPORTANT for HR guidance:
+     * Caregiving leaves are less common than medical/parental
+     * Intermittent leaves require different management than continuous
+     * Duration varies significantly by leave type
+     * Trends help predict future leave patterns
+   - When analyzing patterns, provide actionable insights
+   - Format all responses with clear, HR-friendly language`;
 
     // ReAct loop
     const maxSteps = 15; // Increased for multi-query approach

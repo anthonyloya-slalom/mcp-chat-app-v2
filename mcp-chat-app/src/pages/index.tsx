@@ -5,19 +5,6 @@ import ClaudeMessageEnhanced from '../components/ClaudeMessageEnhanced';
 import { useConversationStore } from '../lib/store';
 import { Message } from '../lib/types';
 import { cn } from '../lib/utils';
-import { 
-  Send, 
-  Sparkles,
-  Database,
-  Search,
-  FileSearch,
-  Loader2,
-  Plus,
-  Settings,
-  History,
-  Bot,
-  User
-} from 'lucide-react';
 
 interface ExecutionStep {
   type: 'action' | 'result' | 'thought';

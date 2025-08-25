@@ -3,28 +3,6 @@ import { Message } from '../lib/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import EnhancedSummary from './EnhancedSummary';
-import FormattedSummary from './FormattedSummary';
-import { 
-  ChevronDown, 
-  ChevronRight, 
-  Eye, 
-  Zap, 
-  Check,
-  Copy,
-  User,
-  Bot,
-  Brain,
-  Network,
-  Loader2,
-  Terminal,
-  Database,
-  Search,
-  FileText,
-  Sparkles,
-  Activity,
-  CheckCircle
-} from 'lucide-react';
 
 interface ExecutionStep {
   type: 'action' | 'result' | 'thought';

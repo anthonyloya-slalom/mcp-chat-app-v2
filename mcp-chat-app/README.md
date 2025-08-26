@@ -19,7 +19,6 @@ A Next.js chat application that integrates with Parsed MCP SQL tools using LangC
 - npm or yarn
 - MCP API credentials
 - LangSmith API key
-- OpenAI API key (optional, for enhanced LLM features)
 
 ## Installation
 
@@ -41,7 +40,7 @@ MCP_API_KEY=your_mcp_api_key_here
 LANGCHAIN_TRACING_V2=true
 LANGCHAIN_API_KEY=your_langsmith_api_key
 LANGCHAIN_PROJECT=mcp-chat-app
-OPENAI_API_KEY=your_openai_api_key_here
+ANTHROPIC_API_KEY=your_claude_api_key_here
 ```
 
 ## Running the Application
@@ -170,7 +169,7 @@ export const mcpTools = [
 ### LangChain Errors
 - Verify LANGCHAIN_API_KEY is valid
 - Check LangSmith project exists
-- Ensure OpenAI API key is set if using GPT models
+- Ensure ANTHROPIC_API_KEY is set for Claude models
 
 ### Build Errors
 - Clear `.next` folder and rebuild

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Head from 'next/head';
 import { Toaster, toast } from 'react-hot-toast';
-import ClaudeMessageEnhanced from '../components/ClaudeMessageEnhanced';
+import ChatMessage from '../components/ChatMessage';
 import { useConversationStore } from '../lib/store';
 import { Message } from '../lib/types';
 import { cn } from '../lib/utils';
@@ -180,9 +180,9 @@ export default function Home() {
                     setExecutionSteps(prev => {
                       const current = prev.get(assistantId) || [];
                       const newSteps = [...current, {
-                        type: 'thought',
+                        type: 'thought' as const,
                         thought: data.thought,
-                        status: 'completed',
+                        status: 'completed' as const,
                         stepNumber: data.stepNumber
                       }];
                       console.log('Updated execution steps:', newSteps);
@@ -190,13 +190,13 @@ export default function Home() {
                     });
                     // Also update the message to show the thought
                     updateMessage(assistantId, {
-                      content: data.message || 'Processing...',
+                      content: data.message || 'Tilt AI is thinking...',
                     });
                   } else if (eventType === 'step') {
                     console.log(`📍 Step ${data.stepNumber}: ${data.message}`);
                     // Show thinking/processing status
                     updateMessage(assistantId, {
-                      content: data.message || 'Processing...',
+                      content: data.message || 'Tilt AI is thinking...',
                     });
                   } else if (eventType === 'start') {
                     console.log(`🚀 Streaming started for: ${data.input}`);
@@ -229,7 +229,7 @@ export default function Home() {
       setExecutionSteps(prev => new Map(prev).set(assistantId, [{
         type: 'action',
         tool: 'Thinking',
-        input: { message: 'Processing your request...' },
+        input: { message: 'Tilt AI is thinking...' },
         status: 'running'
       }]));
       
@@ -452,35 +452,21 @@ export default function Home() {
                   )}>
                     <div className="whitespace-pre-wrap break-words">
                       {message.content || (isProcessing && index === messages.length - 1 ? (
-                        <div className="flex items-center gap-2">
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          <span className="text-purple-300">Thinking...</span>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Loader2 className="w-4 h-4 animate-spin text-orange-400" />
+                            <span className="text-orange-300">Tilt AI is thinking...</span>
+                          </div>
+                          <div className="flex gap-1">
+                            <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                            <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                            <div className="w-2 h-2 bg-orange-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                          </div>
                         </div>
                       ) : '')}
                     </div>
                     
-                    {/* Show execution steps if available */}
-                    {message.role === 'assistant' && executionSteps.get(message.id) && executionSteps.get(message.id)!.length > 0 && (
-                      <details className="mt-4 text-xs">
-                        <summary className="cursor-pointer text-orange-300 hover:text-orange-200 transition-colors">
-                          View processing steps ({executionSteps.get(message.id)!.length})
-                        </summary>
-                        <div className="mt-3 space-y-2">
-                          {executionSteps.get(message.id)!.map((step, i) => (
-                            <div key={i} className="pl-3 border-l-2 border-orange-500/30 text-gray-300">
-                              {step.type === 'thought' && <span>💭 {step.thought}</span>}
-                              {step.type === 'action' && (
-                                <span>🔧 {step.tool} 
-                                  {step.status === 'running' && ' (running...)'}
-                                  {step.status === 'completed' && ' ✓'}
-                                </span>
-                              )}
-                              {step.type === 'result' && <span className="text-green-400">📊 Result received</span>}
-                            </div>
-                          ))}
-                        </div>
-                      </details>
-                    )}
+                    {/* Execution steps hidden - no longer showing chain of thought */}
                   </div>
                   
                   {message.role === 'user' && (

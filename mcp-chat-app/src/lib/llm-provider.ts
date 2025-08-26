@@ -1,8 +1,7 @@
-import { ChatOpenAI } from '@langchain/openai';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 
-export type LLMProvider = 'openai' | 'claude';
+export type LLMProvider = 'claude';
 
 export interface LLMConfig {
   provider: LLMProvider;
@@ -13,11 +12,10 @@ export interface LLMConfig {
 }
 
 export const DEFAULT_MODELS = {
-  openai: 'gpt-4-turbo-preview',
   claude: 'claude-3-opus-20240229',
 };
 
-export function createLLM(config: LLMConfig): BaseChatModel {
+export function createLLM(config: LLMConfig): any {
   const {
     provider,
     apiKey,
@@ -27,15 +25,6 @@ export function createLLM(config: LLMConfig): BaseChatModel {
   } = config;
 
   switch (provider) {
-    case 'openai':
-      return new ChatOpenAI({
-        openAIApiKey: apiKey || process.env.OPENAI_API_KEY,
-        modelName: modelName || DEFAULT_MODELS.openai,
-        temperature,
-        maxTokens,
-        streaming: true,
-      });
-
     case 'claude':
       return new ChatAnthropic({
         anthropicApiKey: apiKey || process.env.ANTHROPIC_API_KEY,
@@ -51,13 +40,6 @@ export function createLLM(config: LLMConfig): BaseChatModel {
 }
 
 export function getDefaultProvider(): LLMProvider {
-  const defaultProvider = process.env.DEFAULT_LLM_PROVIDER;
-  if (defaultProvider === 'openai' || defaultProvider === 'claude') {
-    return defaultProvider;
-  }
-  // Default to Claude if available, otherwise OpenAI
-  if (process.env.ANTHROPIC_API_KEY) {
-    return 'claude';
-  }
-  return 'openai';
+  // Always use Claude as the default provider
+  return 'claude';
 }

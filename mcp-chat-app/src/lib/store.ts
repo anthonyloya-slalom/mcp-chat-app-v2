@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Message, ThoughtProcess, ToolStep } from './types';
-import { LLMProvider } from './enhanced-llm-provider';
+import { LLMProvider } from './llm-provider';
 
 interface ConversationState {
   messages: Message[];

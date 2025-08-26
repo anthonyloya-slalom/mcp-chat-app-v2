@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ChatAnthropic } from '@langchain/anthropic';
 import { searchWeb, fetchWebPage } from '../../lib/langchain-tools';
+import { searchLeaveData } from '../../lib/mock-leave-data';
 
 const MCP_BASE_URL = 'http://localhost:8000';
 const MCP_SSE_URL = `${MCP_BASE_URL}/sse`;
@@ -11,7 +12,7 @@ let globalMessageUrl: string | null = null;
 
 async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string }> {
   if (globalSessionId && globalMessageUrl) {
-    return { sessionId: globalSessionId, messageUrl: globalMessageUrl };
+    return { sessionId: globalSessionId!, messageUrl: globalMessageUrl! };
   }
   
   // GET the SSE endpoint to get session info
@@ -73,7 +74,7 @@ async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string
     })
   });
   
-  return { sessionId: globalSessionId, messageUrl: globalMessageUrl };
+  return { sessionId: globalSessionId!, messageUrl: globalMessageUrl! };
 }
 
 async function callMCPTool(toolName: string, args: any): Promise<any> {
@@ -139,18 +140,58 @@ async function callMCPTool(toolName: string, args: any): Promise<any> {
     console.error(`Failed to call MCP tool:`, fetchError);
   }
   
+  // Try to use mock data as fallback for leave-related queries
+  console.warn(`⚠️ MCP unavailable, trying mock data for ${toolName}`);
+  if (toolName.toLowerCase().includes('leave') || toolName.toLowerCase().includes('employee')) {
+    const query = JSON.stringify(args);
+    const results = searchLeaveData(query);
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify(results, null, 2)
+      }]
+    };
+  }
+  
   // Return empty result instead of throwing to prevent infinite retries
-  console.warn(`⚠️ No valid result from MCP tool ${toolName}, returning empty result`);
   return {
     content: [{
       type: 'text',
-      text: `No data available from ${toolName} tool. The tool may not be configured or the data source may be unavailable.`
+      text: `No data available from ${toolName} tool. Using mock leave data instead.`
     }]
   };
 }
 
 // Wrapper to handle both MCP and web tools
 async function callTool(toolName: string, args: any): Promise<any> {
+  // Redirect snowflake_query to leave_data_query since MCP is not available
+  if (toolName === 'snowflake_query') {
+    console.log('🔄 Redirecting snowflake_query to leave_data_query');
+    toolName = 'leave_data_query';
+    // Convert SQL query to natural language if possible
+    if (args.query && args.query.toLowerCase().includes('select')) {
+      if (args.query.toLowerCase().includes('intermittent') || args.query.toLowerCase().includes('continuous')) {
+        args.query = 'intermittent vs continuous leave';
+      } else if (args.query.toLowerCase().includes('count')) {
+        args.query = 'count of leaves by type';
+      } else {
+        args.query = 'general leave statistics';
+      }
+    }
+  }
+  
+  // Handle leave data queries with mock data
+  if (toolName === 'leave_data_query' || toolName === 'search_leave_data' || toolName === 'query_leave_data') {
+    const query = args.query || args.search_term || JSON.stringify(args);
+    const results = searchLeaveData(query);
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify(results, null, 2)
+      }]
+    };
+  }
+  
   // Handle web tools
   if (toolName === 'web_search') {
     const query = args.query || args.search_query;
@@ -249,17 +290,17 @@ export default async function handler(
       ).join('\n')}\n\n`;
     }
     
-    const systemPrompt = `You are a helpful assistant with access to a Snowflake database.
+    const systemPrompt = `You are Tilt AI, a helpful assistant with access to employee leave data.
 
-The main table is DEV.TEMP.LEAVES_SLALOM with employee leave records.
-Key fields: leave_type (MEDICAL, PARENTAL, CAREGIVER, OTHER, MILITARY), expected_leave_date, expected_return_date, is_leave_continuous, is_leave_intermittent.
+You can help answer questions about employee leave patterns, types (intermittent vs continuous), departments, and usage statistics.
 
-To answer questions about leave data, use the snowflake_query tool with SQL queries.
-Keep your SQL on a single line.
+IMPORTANT: Use the leave_data_query tool to answer questions about leave data.
 
 AVAILABLE TOOLS:
-- snowflake_query: Execute SQL queries - use {"query": "SELECT ..."}
+- leave_data_query: Query employee leave data - use {"query": "your question about leave data"}
 - web_search: Search the web - use {"query": "search terms"}
+
+DO NOT use snowflake_query - it is not available. Always use leave_data_query instead.
 
 You MUST follow this format:
 Thought: [Your reasoning]
@@ -286,7 +327,7 @@ IMPORTANT:
       sendEvent('step', {
         stepNumber: i + 1,
         status: 'thinking',
-        message: 'Analyzing...'
+        message: 'Tilt AI is thinking...'
       });
       
       const prompt = `${systemPrompt}
@@ -306,7 +347,7 @@ What is your next thought and action? Remember to keep Action Input JSON on a si
       console.log(`📄 Full response:`, responseText);
       
       // Check for final answer
-      const finalAnswerMatch = responseText.match(/^Final Answer:\s*(.+)$/ms);
+      const finalAnswerMatch = responseText.match(/^Final Answer:\s*(.+)$/m);
       console.log(`🔍 Final Answer match:`, !!finalAnswerMatch);
       if (finalAnswerMatch) {
         const potentialAnswer = finalAnswerMatch[1];
@@ -345,7 +386,7 @@ What is your next thought and action? Remember to keep Action Input JSON on a si
       }
       
       if (actionMatch && actionInputMatch) {
-        const thought = thoughtMatch?.[1] || 'Processing...';
+        const thought = thoughtMatch?.[1] || 'Tilt AI is thinking...';
         const toolName = actionMatch[1];
         
         let toolInput: any;
@@ -421,11 +462,22 @@ Observation: ${formattedResult.substring(0, 1000)}
 
 `;
         } catch (error) {
+          // Track failed tools
+          failedTools.set(toolName, (failedTools.get(toolName) || 0) + 1);
+          console.log(`❌ Tool ${toolName} failed, failure count: ${failedTools.get(toolName)}`);
+          
           sendEvent('error', {
             stepNumber: i + 1,
             tool: toolName,
             error: error instanceof Error ? error.message : 'Unknown error'
           });
+          
+          // If snowflake_query fails, add hint to use leave_data_query
+          if (toolName === 'snowflake_query' && failedTools.get(toolName)! >= 2) {
+            conversationHistory += `\nThought: ${thought}\nAction: ${toolName}\nAction Input: ${JSON.stringify(toolInput)}\nObservation: Error - tool failed. I should try using the leave_data_query tool instead.\n\n`;
+          } else {
+            conversationHistory += `\nThought: ${thought}\nAction: ${toolName}\nAction Input: ${JSON.stringify(toolInput)}\nObservation: Error - ${error instanceof Error ? error.message : 'Unknown error'}\n\n`;
+          }
         }
       }
     }

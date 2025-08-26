@@ -1,218 +1,126 @@
-// Mock leave data to simulate MCP functionality
-export interface LeaveRecord {
-  leave_id: string;
-  employee_id: string;
-  leave_type: string;
-  expected_leave_date: string;
-  expected_return_date: string;
-  is_leave_continuous: boolean;
-  is_leave_intermittent: boolean;
-  status: string;
-  caregiver_type?: string;
-  duration_days?: number;
-}
-
-// Sample of leave records focusing on CAREGIVER types
-export const mockLeaveData: LeaveRecord[] = [
-  {
-    leave_id: "336f2f22",
-    employee_id: "45751",
-    leave_type: "CAREGIVER",
-    expected_leave_date: "2024-11-07",
-    expected_return_date: "2025-11-08",
-    is_leave_continuous: false,
-    is_leave_intermittent: true,
-    status: "APPROVED_HR",
-    caregiver_type: "CHILD_U18",
-    duration_days: 366
-  },
-  {
-    leave_id: "3ca1f1ac",
-    employee_id: "97284",
-    leave_type: "CAREGIVER",
-    expected_leave_date: "2024-03-11",
-    expected_return_date: "2024-04-12",
-    is_leave_continuous: true,
-    is_leave_intermittent: false,
-    status: "APPROVED_HR",
-    caregiver_type: "PARENT",
-    duration_days: 32
-  },
-  {
-    leave_id: "ee88c3cf",
-    employee_id: "44632",
-    leave_type: "CAREGIVER",
-    expected_leave_date: "2023-11-16",
-    expected_return_date: "2024-11-15",
-    is_leave_continuous: false,
-    is_leave_intermittent: true,
-    status: "APPROVED_HR",
-    caregiver_type: "CHILD_O18",
-    duration_days: 365
-  },
-  {
-    leave_id: "489fed05",
-    employee_id: "42950",
-    leave_type: "CAREGIVER",
-    expected_leave_date: "2024-12-16",
-    expected_return_date: "2025-02-04",
-    is_leave_continuous: true,
-    is_leave_intermittent: false,
-    status: "APPROVED_HR",
-    caregiver_type: "PARENT",
-    duration_days: 50
-  },
-  {
-    leave_id: "63e51a92",
-    employee_id: "49769",
-    leave_type: "CAREGIVER",
-    expected_leave_date: "2023-05-13",
-    expected_return_date: "2023-05-25",
-    is_leave_continuous: true,
-    is_leave_intermittent: false,
-    status: "APPROVED_HR",
-    caregiver_type: "PARENT",
-    duration_days: 12
-  },
-  {
-    leave_id: "d83bfe88",
-    employee_id: "44649",
-    leave_type: "CAREGIVER",
-    expected_leave_date: "2023-11-10",
-    expected_return_date: "2023-11-13",
-    is_leave_continuous: false,
-    is_leave_intermittent: false,
-    status: "APPROVED_HR",
-    caregiver_type: "CHILD_U18",
-    duration_days: 3
-  },
-  {
-    leave_id: "85e1c2d3",
-    employee_id: "44821",
-    leave_type: "CAREGIVER",
-    expected_leave_date: "2025-02-25",
-    expected_return_date: "2025-02-28",
-    is_leave_continuous: true,
-    is_leave_intermittent: false,
-    status: "APPROVED_HR",
-    caregiver_type: "PARENT",
-    duration_days: 3
-  },
-  {
-    leave_id: "ffa18c4e",
-    employee_id: "46379",
-    leave_type: "CAREGIVER",
-    expected_leave_date: "2025-05-22",
-    expected_return_date: "2025-08-28",
-    is_leave_continuous: true,
-    is_leave_intermittent: false,
-    status: "APPROVED_HR",
-    caregiver_type: "PARENT",
-    duration_days: 98
-  },
-  {
-    leave_id: "ca1d5e5e",
-    employee_id: "44825",
-    leave_type: "CAREGIVER",
-    expected_leave_date: "2023-03-06",
-    expected_return_date: "2023-03-30",
-    is_leave_continuous: false,
-    is_leave_intermittent: true,
-    status: "APPROVED_HR",
-    caregiver_type: "CHILD_U18",
-    duration_days: 24
-  },
-  {
-    leave_id: "3c251b93",
-    employee_id: "42759",
-    leave_type: "CAREGIVER",
-    expected_leave_date: "2023-03-14",
-    expected_return_date: "2024-03-13",
-    is_leave_continuous: false,
-    is_leave_intermittent: false,
-    status: "APPROVED_HR",
-    caregiver_type: "SPOUSE",
-    duration_days: 365
-  }
-];
-
-// Mock query functions to simulate database queries
-export function calculateAverageDuration(): number {
-  const validLeaves = mockLeaveData.filter(leave => 
-    leave.expected_leave_date && leave.expected_return_date
-  );
-  
-  const durations = validLeaves.map(leave => {
-    const start = new Date(leave.expected_leave_date);
-    const end = new Date(leave.expected_return_date);
-    const diffTime = Math.abs(end.getTime() - start.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  });
-  
-  const sum = durations.reduce((a, b) => a + b, 0);
-  return Math.round(sum / durations.length);
-}
-
-export function getLeaveStatistics() {
-  const avgDuration = calculateAverageDuration();
-  const totalLeaves = mockLeaveData.length;
-  
-  const continuousLeaves = mockLeaveData.filter(l => l.is_leave_continuous).length;
-  const intermittentLeaves = mockLeaveData.filter(l => l.is_leave_intermittent).length;
-  
-  const caregiverTypes = mockLeaveData.reduce((acc, leave) => {
-    if (leave.caregiver_type) {
-      acc[leave.caregiver_type] = (acc[leave.caregiver_type] || 0) + 1;
+// Mock leave data for when MCP server is unavailable
+export const mockLeaveData = {
+  employees: [
+    {
+      id: 1,
+      name: "Sarah Johnson",
+      department: "Engineering",
+      leaveType: "intermittent",
+      startDate: "2024-01-15",
+      endDate: "2024-12-31",
+      hoursUsed: 120,
+      hoursRemaining: 360,
+      reason: "Caring for elderly parent with chronic condition"
+    },
+    {
+      id: 2,
+      name: "Michael Chen",
+      department: "Marketing",
+      leaveType: "continuous",
+      startDate: "2024-03-01",
+      endDate: "2024-05-15",
+      hoursUsed: 480,
+      hoursRemaining: 0,
+      reason: "Post-surgery recovery for spouse"
+    },
+    {
+      id: 3,
+      name: "Emily Rodriguez",
+      department: "HR",
+      leaveType: "intermittent",
+      startDate: "2024-02-10",
+      endDate: "2024-08-10",
+      hoursUsed: 200,
+      hoursRemaining: 280,
+      reason: "Child with recurring medical appointments"
+    },
+    {
+      id: 4,
+      name: "David Park",
+      department: "Finance",
+      leaveType: "continuous",
+      startDate: "2024-04-01",
+      endDate: "2024-04-30",
+      hoursUsed: 160,
+      hoursRemaining: 320,
+      reason: "Recovery from major surgery"
+    },
+    {
+      id: 5,
+      name: "Lisa Thompson",
+      department: "Engineering",
+      leaveType: "intermittent",
+      startDate: "2024-01-01",
+      endDate: "2024-12-31",
+      hoursUsed: 80,
+      hoursRemaining: 400,
+      reason: "Parent with Alzheimer's disease"
     }
-    return acc;
-  }, {} as Record<string, number>);
-  
-  return {
-    average_duration_days: avgDuration,
-    total_leaves: totalLeaves,
-    continuous_leaves: continuousLeaves,
-    intermittent_leaves: intermittentLeaves,
-    caregiver_types: caregiverTypes,
-    min_duration: Math.min(...mockLeaveData.map(l => l.duration_days || 0)),
-    max_duration: Math.max(...mockLeaveData.map(l => l.duration_days || 0))
-  };
-}
+  ],
+  statistics: {
+    totalEmployeesOnLeave: 5,
+    intermittentLeave: 3,
+    continuousLeave: 2,
+    averageHoursUsed: 168,
+    departmentBreakdown: {
+      Engineering: 2,
+      Marketing: 1,
+      HR: 1,
+      Finance: 1
+    },
+    commonReasons: [
+      { reason: "Elderly parent care", count: 2 },
+      { reason: "Medical procedures", count: 2 },
+      { reason: "Child care", count: 1 }
+    ]
+  }
+};
 
-export function queryLeaveData(query: string): any {
-  // Parse the query and return appropriate mock data
-  const queryLower = query.toLowerCase();
+// Function to search leave data based on query
+export function searchLeaveData(query: string): any {
+  const lowerQuery = query.toLowerCase();
   
-  if (queryLower.includes('avg') && queryLower.includes('datediff')) {
-    // Average duration query
-    const stats = getLeaveStatistics();
+  if (lowerQuery.includes('intermittent') && lowerQuery.includes('continuous')) {
+    // Return statistics about leave types
     return {
-      AVG_CAREGIVER_LEAVE_DAYS: stats.average_duration_days,
-      TOTAL_LEAVES: stats.total_leaves,
-      MIN_DAYS: stats.min_duration,
-      MAX_DAYS: stats.max_duration
+      summary: `Currently, ${mockLeaveData.statistics.intermittentLeave} employees (60%) are on intermittent leave and ${mockLeaveData.statistics.continuousLeave} employees (40%) are on continuous leave.`,
+      intermittentEmployees: mockLeaveData.employees.filter(e => e.leaveType === 'intermittent'),
+      continuousEmployees: mockLeaveData.employees.filter(e => e.leaveType === 'continuous'),
+      insight: "Intermittent leave is more common, likely because it allows employees to maintain work continuity while managing caregiving responsibilities."
     };
   }
   
-  if (queryLower.includes('count') && queryLower.includes('continuous')) {
-    // Continuous vs intermittent query
-    const stats = getLeaveStatistics();
+  if (lowerQuery.includes('department')) {
     return {
-      CONTINUOUS_LEAVES: stats.continuous_leaves,
-      INTERMITTENT_LEAVES: stats.intermittent_leaves,
-      TOTAL: stats.total_leaves
+      summary: "Leave distribution by department",
+      breakdown: mockLeaveData.statistics.departmentBreakdown,
+      details: mockLeaveData.employees.map(e => ({
+        name: e.name,
+        department: e.department,
+        leaveType: e.leaveType
+      }))
     };
   }
   
-  if (queryLower.includes('caregiver_type')) {
-    // Caregiver type breakdown
-    const stats = getLeaveStatistics();
-    return Object.entries(stats.caregiver_types).map(([type, count]) => ({
-      CAREGIVER_TYPE: type,
-      COUNT: count
-    }));
+  if (lowerQuery.includes('hours') || lowerQuery.includes('time')) {
+    return {
+      summary: `Average hours used: ${mockLeaveData.statistics.averageHoursUsed}`,
+      employees: mockLeaveData.employees.map(e => ({
+        name: e.name,
+        hoursUsed: e.hoursUsed,
+        hoursRemaining: e.hoursRemaining,
+        totalAllocated: e.hoursUsed + e.hoursRemaining
+      }))
+    };
   }
   
-  // Default: return summary statistics
-  return getLeaveStatistics();
+  // Default response
+  return {
+    totalEmployees: mockLeaveData.statistics.totalEmployeesOnLeave,
+    leaveTypes: {
+      intermittent: mockLeaveData.statistics.intermittentLeave,
+      continuous: mockLeaveData.statistics.continuousLeave
+    },
+    employees: mockLeaveData.employees
+  };
 }

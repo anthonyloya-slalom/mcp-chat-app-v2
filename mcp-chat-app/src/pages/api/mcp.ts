@@ -10,7 +10,7 @@ let globalMessageUrl: string | null = null;
 
 async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string }> {
   if (globalSessionId && globalMessageUrl) {
-    return { sessionId: globalSessionId, messageUrl: globalMessageUrl };
+    return { sessionId: globalSessionId!, messageUrl: globalMessageUrl! };
   }
   
   // GET the SSE endpoint to get session info
@@ -73,7 +73,7 @@ async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string
     })
   });
   
-  return { sessionId: globalSessionId, messageUrl: globalMessageUrl };
+  return { sessionId: globalSessionId!, messageUrl: globalMessageUrl! };
 }
 
 async function callMCPTool(toolName: string, args: any): Promise<any> {
@@ -376,7 +376,7 @@ What is your next thought and action?`;
       
       // Fallback to simple patterns if above doesn't work
       if (!inputMatch) {
-        inputMatch = responseText.match(/Action Input:\s*({.*?})/s) ||
+        inputMatch = responseText.match(/Action Input:\s*({.*?})/) ||
                      responseText.match(/Action Input:\s*({})/);
       }
       
@@ -416,13 +416,13 @@ What is your next thought and action?`;
           }
         }
         if (!inputMatch2) {
-          inputMatch2 = validPart.match(/Action Input:\s*({.*?})/s) ||
+          inputMatch2 = validPart.match(/Action Input:\s*({.*?})/) ||
                        validPart.match(/Action Input:\s*({})/);
         }
         
         if (actionMatch2 && inputMatch2) {
           // Process the valid action before the hallucination
-          const thought = thoughtMatch2?.[1] || 'Processing...';
+          const thought = thoughtMatch2?.[1] || 'Tilt AI is thinking...';
           const toolName = actionMatch2[1];
           let toolInput: any;
           
@@ -489,7 +489,7 @@ Observation: ${formattedResult.substring(0, 1000)}
       }
       
       if (actionMatch && inputMatch) {
-        const thought = thoughtMatch?.[1] || 'Processing...';
+        const thought = thoughtMatch?.[1] || 'Tilt AI is thinking...';
         const toolName = actionMatch[1];
         let toolInput: any;
         

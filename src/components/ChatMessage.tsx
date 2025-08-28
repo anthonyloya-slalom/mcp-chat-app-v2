@@ -225,7 +225,7 @@ export default function ChatMessage({
             }
           } catch {
             // Display as text
-            return <div className="text-sm text-gray-300 whitespace-pre-wrap">{textContent.text.substring(0, 500)}</div>;
+            return <div className="text-sm text-black whitespace-pre-wrap">{textContent.text.substring(0, 500)}</div>;
           }
         }
       }
@@ -234,16 +234,16 @@ export default function ChatMessage({
       if (parsed.rows && Array.isArray(parsed.rows)) {
         return (
           <div className="space-y-2">
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-black">
               Query executed successfully ({parsed.rows.length} rows):
             </div>
             {parsed.rows.slice(0, 3).map((row: any, idx: number) => (
               <div key={idx} className="bg-gray-900 p-2 rounded text-xs space-y-1">
-                <div className="text-gray-400 font-medium">Row {idx + 1}:</div>
+                <div className="text-black font-medium">Row {idx + 1}:</div>
                 {Object.entries(row).slice(0, 4).map(([key, value]) => (
                   <div key={key} className="flex items-start gap-2">
-                    <span className="text-gray-500 min-w-[100px]">{key}:</span>
-                    <span className="text-gray-200 font-mono break-all">
+                    <span className="text-black min-w-[100px]">{key}:</span>
+                    <span className="text-black font-mono break-all">
                       {typeof value === 'object' ? JSON.stringify(value) : String(value).substring(0, 50)}
                     </span>
                   </div>
@@ -256,44 +256,24 @@ export default function ChatMessage({
       
       // Handle text output
       if (typeof parsed === 'string') {
-        return <div className="text-sm text-gray-300 whitespace-pre-wrap">{parsed.substring(0, 500)}</div>;
+  return <div className="text-sm text-black whitespace-pre-wrap">{parsed.substring(0, 500)}</div>;
       }
       
-      return <pre className="text-xs text-gray-300 overflow-x-auto">{JSON.stringify(parsed, null, 2).substring(0, 500)}</pre>;
+  return <pre className="text-xs text-black overflow-x-auto">{JSON.stringify(parsed, null, 2).substring(0, 500)}</pre>;
     } catch {
       // If it's not JSON, display as text
       const text = String(output);
       if (text.length > 500) {
-        return <div className="text-sm text-gray-300 whitespace-pre-wrap">{text.substring(0, 500)}...</div>;
+        return <div className="text-sm text-black whitespace-pre-wrap">{text.substring(0, 500)}...</div>;
       }
-      return <div className="text-sm text-gray-300 whitespace-pre-wrap">{text}</div>;
+      return <div className="text-sm text-black whitespace-pre-wrap">{text}</div>;
     }
   };
 
   return (
     <div className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''} mb-6`}>
-      {/* Avatar */}
-      <div className="flex-shrink-0">
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-          message.role === 'user' 
-            ? 'bg-blue-500 text-white' 
-            : 'bg-gradient-to-br from-orange-500 to-orange-600 text-white'
-        }`}>
-          {message.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
-        </div>
-      </div>
-
-      {/* Message Content */}
-      <div className="flex-1 max-w-[85%]">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-sm font-medium text-gray-200">
-            {message.role === 'user' ? 'You' : 'Tilt AI'}
-          </span>
-          <span className="text-xs text-gray-500">
-            {new Date(message.timestamp).toLocaleTimeString()}
-          </span>
-        </div>
-
+      {/* Sender icons fully removed for both user and assistant */}
+      <div>
         {/* User Message */}
         {message.role === 'user' && (
           <div className="rounded-lg bg-blue-900/30 border border-blue-800/50 p-4">
@@ -307,13 +287,13 @@ export default function ChatMessage({
 
         {/* Assistant Message */}
         {message.role === 'assistant' && (
-          <div className="space-y-3">
+          <div className="space-y-3 text-black">
             {/* Thinking Indicator - Show when streaming */}
             {isStreaming && (
-              <div className="rounded-lg bg-orange-900/20 border border-orange-800/50 p-4">
+              <div className="rounded-lg bg-purple-900/20 border border-purple-800/50 p-4">
                 <div className="flex items-center gap-3">
-                  <Loader2 className="w-5 h-5 text-orange-400 animate-spin" />
-                  <div className="text-sm font-medium text-orange-300">
+                  {/* Loader icon removed */}
+                  <div className="text-sm font-medium  text-black">
                     Tilt AI is thinking...
                   </div>
                 </div>
@@ -323,21 +303,20 @@ export default function ChatMessage({
             
             {/* Summary/Content - Show AFTER execution */}
             {message.content && (
-              <div className="rounded-lg bg-gray-900/30 border border-gray-800/50 p-4">
+              <div className="rounded-lg bg-purple-100 border border-purple-300 p-4">
                 <ReactMarkdown 
                   remarkPlugins={[remarkGfm]}
-                  className="prose prose-invert prose-sm max-w-none"
+                  className="prose prose-sm max-w-none text-black"
                 >
                   {message.content}
                 </ReactMarkdown>
-                
                 {/* Additional Extracted Data Display */}
                 {queryData && queryData.length > 0 && (
-                  <div className="mt-4 border-t border-gray-800 pt-4">
+                  <div className="mt-4 border-t border-purple-300 pt-4">
                     <div className="space-y-2">
                       {queryData.map((item: any, idx: number) => (
-                        <div key={idx} className="text-sm text-gray-300">
-                          <span className="text-orange-400">{item.address}:</span> {item.amount} CTX
+                        <div key={idx} className="text-sm text-black">
+                          <span className="text-purple-700">{item.address}:</span> {item.amount} CTX
                         </div>
                       ))}
                     </div>
@@ -349,7 +328,7 @@ export default function ChatMessage({
             {/* Copy Button */}
             <button
               onClick={handleCopy}
-              className="p-1.5 text-gray-500 hover:text-gray-300 transition-colors"
+              className="p-1.5 text-black hover:text-black transition-colors"
               title="Copy message"
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}

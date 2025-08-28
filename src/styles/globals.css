@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* Dark theme by default - Vercel style */
-    --background: 0 0% 3.9%;
+  --background: 0 0% 100%;
     --foreground: 0 0% 98%;
     --card: 0 0% 7%;
     --card-foreground: 0 0% 98%;
@@ -112,7 +112,7 @@ html, body {
 }
 
 .sql-number {
-  @apply text-orange-600;
+  @apply text-purple-600;
 }
 
 .sql-operator {
@@ -238,4 +238,8 @@ html, body {
   .prose pre {
     @apply text-xs;
   }
+}
+
+.prose.text-black, .prose.text-black * {
+  color: #000 !important;
 }

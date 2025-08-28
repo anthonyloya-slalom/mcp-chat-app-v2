@@ -1,4 +1,3 @@
-import { cn } from '../../lib/utils';
 import { ReactNode } from 'react';
 
 interface PromptBubbleProps {
@@ -12,9 +11,8 @@ export default function PromptBubble({ icon, text, description, onClick }: Promp
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-purple-500/20 hover:border-purple-500/40 transition-all group"
+      className="w-full flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-gray-200 hover:border-gray-300 transition-all group"
     >
-
       <div className="flex-1 text-left">
         <p className="text-sm font-medium text-black">{text}</p>
         {description}

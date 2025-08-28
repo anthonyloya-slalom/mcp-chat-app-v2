@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Message } from '../lib/types';
-import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Database, Search, FileText, Terminal, User, Bot, Network, Loader2, ChevronDown, ChevronRight, Eye, Zap, Brain, CheckCircle, Check, Copy } from 'lucide-react';
+import { Check, Copy } from 'lucide-react';
 
 interface ExecutionStep {
   type: 'action' | 'result' | 'thought';
@@ -26,10 +25,8 @@ export default function ChatMessage({
   isStreaming, 
   executionSteps 
 }: ChatMessageProps) {
-  const [showExecution, setShowExecution] = useState(false); // Default to collapsed
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
   const [copied, setCopied] = useState(false);
-  const [summary, setSummary] = useState<string>('');
   const [queryData, setQueryData] = useState<any>(null);
   
   // Auto-expand running steps
@@ -161,52 +158,10 @@ export default function ChatMessage({
     extractDataFromContent();
   }, [message.content]);
 
-  const toggleStep = (index: number) => {
-    const newExpanded = new Set(expandedSteps);
-    if (newExpanded.has(index)) {
-      newExpanded.delete(index);
-    } else {
-      newExpanded.add(index);
-    }
-    setExpandedSteps(newExpanded);
-  };
-
   const handleCopy = () => {
     navigator.clipboard.writeText(message.content);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-  };
-
-  const getToolIcon = (tool: string) => {
-    if (tool?.includes('sql') || tool?.includes('query')) return <Database className="w-4 h-4" />;
-    if (tool?.includes('search') || tool?.includes('find')) return <Search className="w-4 h-4" />;
-    if (tool?.includes('table') || tool?.includes('details')) return <FileText className="w-4 h-4" />;
-    return <Terminal className="w-4 h-4" />;
-  };
-
-  const formatToolInput = (input: any) => {
-    // Handle string input that might be JSON
-    if (typeof input === 'string') {
-      try {
-        const parsed = JSON.parse(input);
-        input = parsed;
-      } catch {
-        return input;
-      }
-    }
-    
-    if (input?.query) {
-      // Format SQL query with syntax highlighting
-      return (
-        <pre className="language-sql whitespace-pre-wrap break-all">
-          <code>{input.query}</code>
-        </pre>
-      );
-    }
-    if (input?.project_name) return `Project: ${input.project_name}`;
-    if (input?.table_name) return `Table: ${input.table_name}`;
-    if (input?.search_term) return `Search: ${input.search_term}`;
-    return JSON.stringify(input, null, 2);
   };
 
   const formatToolOutput = (output: any) => {
@@ -272,9 +227,7 @@ export default function ChatMessage({
 
   return (
     <div className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''} mb-6`}>
-      {/* Sender icons fully removed for both user and assistant */}
       <div>
-        {/* User Message */}
         {message.role === 'user' && (
           <div className="rounded-lg bg-blue-900/30 border border-blue-800/50 p-4">
             <div className="prose prose-sm prose-invert max-w-none">
@@ -300,8 +253,7 @@ export default function ChatMessage({
               </div>
             )}
 
-            
-            {/* Summary/Content - Show AFTER execution */}
+          
             {message.content && (
               <div className="rounded-lg bg-purple-100 border border-purple-300 p-4">
                 <ReactMarkdown 
@@ -310,7 +262,6 @@ export default function ChatMessage({
                 >
                   {message.content}
                 </ReactMarkdown>
-                {/* Additional Extracted Data Display */}
                 {queryData && queryData.length > 0 && (
                   <div className="mt-4 border-t border-purple-300 pt-4">
                     <div className="space-y-2">
@@ -325,7 +276,6 @@ export default function ChatMessage({
               </div>
             )}
             
-            {/* Copy Button */}
             <button
               onClick={handleCopy}
               className="p-1.5 text-black hover:text-black transition-colors"

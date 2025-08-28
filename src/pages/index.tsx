@@ -350,17 +350,11 @@ export default function Home() {
           },
         }}
       />
-      
-  {/* Header removed */}
-      
-      {/* Messages Area */}
+
       <div className="flex-1 overflow-y-auto">
         <div className="container mx-auto max-w-4xl px-4 py-6">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] py-12">
-
-              
-              {/* Example Queries */}
               <div className="w-full max-w-2xl space-y-3">
                 <p className="text-sm text-purple-400/60 mb-4 font-medium">Try an example:</p>
                 {exampleQueries.map((query, index) => (
@@ -413,8 +407,6 @@ export default function Home() {
                         </div>
                       ) : '')}
                     </div>
-                    
-                    {/* Execution steps hidden - no longer showing chain of thought */}
                   </div>
                   
                   {message.role === 'user' && (

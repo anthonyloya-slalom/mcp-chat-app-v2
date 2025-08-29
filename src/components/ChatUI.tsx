@@ -1,21 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import Head from 'next/head';
 import { Toaster, toast } from 'react-hot-toast';
 import { useConversationStore } from '../lib/store';
 import { Message } from '../lib/types';
 import { cn } from '../lib/utils';
-import { 
-  Database,
-  Search,
-  FileSearch,
-  Loader2,
-  Bot,
-  User
-} from 'lucide-react';
-import PromptBubble from '../components/ui/promptBubble';
-import MessageInputBox from '../components/ui/messageInputBox';
-import NavBar from '../components/ui/navBar';
-import Greeting from '../components/ui/greeting';
+import { Loader2, Bot, User } from 'lucide-react';
+import PromptBubble from './ui/promptBubble';
+import MessageInputBox from './ui/messageInputBox';
+import Greeting from './ui/greeting';
 
 interface ExecutionStep {
   type: 'action' | 'result' | 'thought';
@@ -27,7 +18,11 @@ interface ExecutionStep {
   stepNumber?: number;
 }
 
-export default function Home() {
+interface ChatUIProps {
+  onClose?: () => void;
+}
+
+export default function ChatUI({ onClose }: ChatUIProps) {
   const {
     messages,
     currentProvider,
@@ -36,24 +31,17 @@ export default function Home() {
     updateMessage,
     setProcessing,
   } = useConversationStore();
-  
+
   const [inputValue, setInputValue] = useState('');
   const [executionSteps, setExecutionSteps] = useState<Map<string, ExecutionStep[]>>(new Map());
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  
+
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, executionSteps]);
-  
-  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-  
+  }, [messages, executionSteps]);
+
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || isProcessing) return;
-    
-    // Add user message
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       role: 'user',
@@ -62,10 +50,8 @@ export default function Home() {
     };
     addMessage(userMessage);
     setInputValue('');
-    
     setProcessing(true);
     
-    // Create assistant message placeholder
     const assistantId = `assistant-${Date.now()}`;
     const assistantMessage: Message = {
       id: assistantId,
@@ -75,7 +61,7 @@ export default function Home() {
       thoughts: [],
     };
     addMessage(assistantMessage);
-    
+
     // Initialize execution steps
     const steps: ExecutionStep[] = [];
     setExecutionSteps(prev => new Map(prev).set(assistantId, steps));
@@ -309,42 +295,25 @@ export default function Home() {
     }
   };
   
-  const exampleQueries = [
-    { 
-      icon: <Database className="w-4 h-4" />, 
-      text: 'How common is it to have intermittent vs continuous caregiving leaves?',
-    },
-    { 
-      icon: <FileSearch className="w-4 h-4" />, 
-      text: 'What is the typical duration of a caregiving leave for us?',
-    },
-    { 
-      icon: <Search className="w-4 h-4" />, 
-      text: 'How are intermittent vs continuous leaves trending over the past year?',
-    },
-  ];
-  
-  return (
-    <div className="flex flex-col h-screen bg-white">
-      <NavBar />
-      <Head>
-        <title>Tilt Chat Bot</title>
-        <meta name="description" content="Advanced chat with Model Context Protocol" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      
-      <Toaster 
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: 'linear-gradient(to right, #6d28d9, #a78bfa)',
-            color: '#e2e8f0',
-            border: '1px solid rgba(139, 92, 246, 0.2)',
-            backdropFilter: 'blur(10px)',
-          },
-        }}
-      />
 
+  const exampleQueries = [
+    { text: 'How common is it to have intermittent vs continuous caregiving leaves?' },
+    { text: 'What is the typical duration of a caregiving leave for us?' },
+    { text: 'How are intermittent vs continuous leaves trending over the past year?' },
+  ];
+
+  return (
+    <div className={cn('flex flex-col h-full bg-white')}>
+      <div className="w-full bg-black py-3 px-5 shadow-md rounded-t-2xl flex items-center justify-between">
+        <span className="text-white text-base font-semibold">Chat with Tilda</span>
+          <button
+            className="ml-auto w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors"
+            onClick={onClose}
+            aria-label="Close chat"
+          >
+            <span className="text-white text-base font-semibold">X</span>
+          </button>
+      </div>
       <div className="flex-1 overflow-y-auto">
         <div className="container mx-auto max-w-4xl px-4 py-6">
           {messages.length === 0 ? (
@@ -355,7 +324,6 @@ export default function Home() {
                 {exampleQueries.map((query, index) => (
                   <PromptBubble
                     key={index}
-                    icon={query.icon}
                     text={query.text}
                     onClick={() => handleSendMessage(query.text)}
                   />
@@ -366,25 +334,14 @@ export default function Home() {
             <div className="space-y-6">
               {messages.map((message, index) => (
                 <div key={message.id} className={cn(
-                  "flex gap-4",
+                  'flex gap-4',
                   message.role === 'user' ? 'justify-end' : 'justify-start'
                 )}>
-                  {message.role === 'assistant' && (
-                    <div className="flex-shrink-0">
-                      <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-purple-400 rounded-xl blur opacity-60"></div>
-                        <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-400 flex items-center justify-center shadow-lg">
-                          <Bot className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  
                   <div className={cn(
-                    "max-w-[70%] rounded-2xl px-5 py-4 shadow-xl",
-                    message.role === 'user' 
-                      ? "bg-purple-600 text-white"
-                      : "bg-white/10 backdrop-blur-lg text-black border border-purple-500/20"
+                    'max-w-[70%] rounded-2xl px-5 py-4 shadow-xl',
+                    message.role === 'user'
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-white/10 backdrop-blur-lg text-black border border-purple-500/20'
                   )}>
                     <div className="whitespace-pre-wrap break-words">
                       {message.content || (isProcessing && index === messages.length - 1 ? (
@@ -402,14 +359,6 @@ export default function Home() {
                       ) : '')}
                     </div>
                   </div>
-                  
-                  {message.role === 'user' && (
-                    <div className="flex-shrink-0">
-                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-gray-700 to-gray-800 flex items-center justify-center shadow-lg border border-gray-700">
-                        <User className="w-6 h-6 text-gray-300" />
-                      </div>
-                    </div>
-                  )}
                 </div>
               ))}
               <div ref={messagesEndRef} />
@@ -417,7 +366,6 @@ export default function Home() {
           )}
         </div>
       </div>
-      
       <MessageInputBox
         inputValue={inputValue}
         setInputValue={setInputValue}

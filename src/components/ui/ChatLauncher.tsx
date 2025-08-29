@@ -7,7 +7,7 @@ export default function ChatLauncher() {
   return (
     <>
       {open ? (
-        <div className="fixed bottom-10 right-10 z-50 w-[1100px] h-[1000px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+        <div className="fixed bottom-10 right-10 z-50 w-[500px] h-[700px] bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden">
           <ChatUI onClose={() => setOpen(false)} />
         </div>
       ) : (

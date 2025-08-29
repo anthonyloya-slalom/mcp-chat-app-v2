@@ -3,13 +3,15 @@ import { Message } from '../lib/types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Check, Copy } from 'lucide-react';
+import ChainOfThought from './ChainOfThought';
 
 interface ExecutionStep {
-  type: 'action' | 'result' | 'thought';
+  type: 'action' | 'result' | 'thought' | 'error';
   tool?: string;
   input?: any;
   output?: any;
   thought?: string;
+  error?: string;
   status: 'pending' | 'running' | 'completed' | 'error';
   stepNumber?: number;
 }
@@ -18,12 +20,14 @@ interface ChatMessageProps {
   message: Message;
   isStreaming?: boolean;
   executionSteps?: ExecutionStep[];
+  onRetryStep?: (stepIndex: number) => void;
 }
 
 export default function ChatMessage({ 
   message, 
   isStreaming, 
-  executionSteps 
+  executionSteps,
+  onRetryStep 
 }: ChatMessageProps) {
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
   const [copied, setCopied] = useState(false);
@@ -226,10 +230,10 @@ export default function ChatMessage({
   };
 
   return (
-    <div className={`flex gap-3 ${message.role === 'user' ? 'flex-row-reverse' : ''} mb-6`}>
-      <div>
+    <div className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'} mb-6`}>
+      <div className={`${message.role === 'user' ? 'max-w-[70%]' : 'max-w-[85%] w-full'}`}>
         {message.role === 'user' && (
-          <div className="rounded-lg bg-blue-900/30 border border-blue-800/50 p-4">
+          <div className="rounded-2xl bg-purple-600 text-white px-5 py-4 shadow-xl">
             <div className="prose prose-sm prose-invert max-w-none">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {message.content}
@@ -241,8 +245,17 @@ export default function ChatMessage({
         {/* Assistant Message */}
         {message.role === 'assistant' && (
           <div className="space-y-3 text-black">
-            {/* Thinking Indicator - Show when streaming */}
-            {isStreaming && (
+            {/* Chain of Thought Execution Steps */}
+            {executionSteps && executionSteps.length > 0 && (
+              <ChainOfThought 
+                steps={executionSteps} 
+                isStreaming={isStreaming}
+                onRetry={onRetryStep}
+              />
+            )}
+            
+            {/* Thinking Indicator - Show only when streaming without steps */}
+            {isStreaming && (!executionSteps || executionSteps.length === 0) && (
               <div className="rounded-lg bg-purple-900/20 border border-purple-800/50 p-4">
                 <div className="flex items-center gap-3">
                   {/* Loader icon removed */}
@@ -255,7 +268,7 @@ export default function ChatMessage({
 
           
             {message.content && (
-              <div className="rounded-lg bg-purple-100 border border-purple-300 p-4">
+              <div className="rounded-2xl bg-white/10 backdrop-blur-lg text-black border border-purple-500/20 px-5 py-4 shadow-xl">
                 <ReactMarkdown 
                   remarkPlugins={[remarkGfm]}
                   className="prose prose-sm max-w-none text-black"
@@ -273,16 +286,15 @@ export default function ChatMessage({
                     </div>
                   </div>
                 )}
+                <button
+                  onClick={handleCopy}
+                  className="mt-2 p-1.5 text-gray-500 hover:text-gray-700 transition-colors"
+                  title="Copy message"
+                >
+                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </button>
               </div>
             )}
-            
-            <button
-              onClick={handleCopy}
-              className="p-1.5 text-black hover:text-black transition-colors"
-              title="Copy message"
-            >
-              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-            </button>
           </div>
         )}
       </div>

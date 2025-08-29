@@ -7,13 +7,15 @@ import { Loader2, Bot, User } from 'lucide-react';
 import PromptBubble from './ui/promptBubble';
 import MessageInputBox from './ui/messageInputBox';
 import Greeting from './ui/greeting';
+import ChatMessage from './ChatMessage';
 
 interface ExecutionStep {
-  type: 'action' | 'result' | 'thought';
+  type: 'action' | 'result' | 'thought' | 'error';
   tool?: string;
   input?: any;
   output?: any;
   thought?: string;
+  error?: string;
   status: 'pending' | 'running' | 'completed' | 'error';
   stepNumber?: number;
 }
@@ -185,6 +187,24 @@ export default function ChatUI({ onClose }: ChatUIProps) {
                     console.log(`🚀 Streaming started for: ${data.input}`);
                   } else if (eventType === 'error') {
                     console.error(`❌ Error:`, data);
+                    setExecutionSteps(prev => {
+                      const current = prev.get(assistantId) || [];
+                      const newSteps = [...current];
+                      
+                      // Mark last step as error if exists
+                      if (newSteps.length > 0) {
+                        newSteps[newSteps.length - 1].status = 'error';
+                      }
+                      
+                      // Add error step
+                      newSteps.push({
+                        type: 'error',
+                        error: data.error || data.message || 'An error occurred',
+                        status: 'error'
+                      });
+                      
+                      return new Map(prev).set(assistantId, newSteps);
+                    });
                   }
                   i++; // Skip the data line we just processed
                 } catch (e) {
@@ -333,33 +353,16 @@ export default function ChatUI({ onClose }: ChatUIProps) {
           ) : (
             <div className="space-y-6">
               {messages.map((message, index) => (
-                <div key={message.id} className={cn(
-                  'flex gap-4',
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
-                )}>
-                  <div className={cn(
-                    'max-w-[70%] rounded-2xl px-5 py-4 shadow-xl',
-                    message.role === 'user'
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-white/10 backdrop-blur-lg text-black border border-purple-500/20'
-                  )}>
-                    <div className="whitespace-pre-wrap break-words">
-                      {message.content || (isProcessing && index === messages.length - 1 ? (
-                        <div className="space-y-3">
-                          <div className="flex items-center gap-2">
-                            <Loader2 className="w-4 h-4 animate-spin text-black" />
-                            <span className="text-black">Tilt AI is thinking...</span>
-                          </div>
-                          <div className="flex gap-1">
-                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                            <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                          </div>
-                        </div>
-                      ) : '')}
-                    </div>
-                  </div>
-                </div>
+                <ChatMessage
+                  key={message.id}
+                  message={message}
+                  isStreaming={isProcessing && index === messages.length - 1}
+                  executionSteps={executionSteps.get(message.id)}
+                  onRetryStep={(stepIndex) => {
+                    console.log(`Retrying step ${stepIndex} for message ${message.id}`);
+                    // TODO: Implement retry logic based on your API
+                  }}
+                />
               ))}
               <div ref={messagesEndRef} />
             </div>

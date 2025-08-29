@@ -3,7 +3,7 @@ import { Toaster, toast } from 'react-hot-toast';
 import { useConversationStore } from '../lib/store';
 import { Message } from '../lib/types';
 import { cn } from '../lib/utils';
-import { Loader2, Bot, User } from 'lucide-react';
+import { Loader2, Bot, User, X as XIcon } from 'lucide-react';
 import PromptBubble from './ui/promptBubble';
 import MessageInputBox from './ui/messageInputBox';
 import Greeting from './ui/greeting';
@@ -327,14 +327,14 @@ export default function ChatUI({ onClose }: ChatUIProps) {
       <div className="w-full bg-black py-3 px-5 shadow-md rounded-t-2xl flex items-center justify-between">
         <span className="text-white text-base font-semibold">Chat with Tilda</span>
           <button
-            className="ml-auto w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-200 transition-colors"
+            className="ml-auto w-10 h-10 flex items-center justify-center"
             onClick={onClose}
             aria-label="Close chat"
           >
-            <span className="text-white text-base font-semibold">X</span>
+            <XIcon className="w-6 h-6 text-white" />
           </button>
       </div>
-      <div className="flex-1 overflow-y-auto">
+      <div className={messages.length === 0 ? "flex-1 overflow-hidden" : "flex-1 overflow-y-auto"}>
         <div className="container mx-auto max-w-4xl px-4 py-6">
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] py-12">

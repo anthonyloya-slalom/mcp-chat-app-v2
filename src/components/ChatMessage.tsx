@@ -215,18 +215,18 @@ export default function ChatMessage({
       
       // Handle text output
       if (typeof parsed === 'string') {
-  return <div className="text-sm text-black whitespace-pre-wrap">{parsed.substring(0, 500)}</div>;
+        return <div className="text-sm text-black whitespace-pre-wrap">{parsed.substring(0, 500)}</div>;
       }
       
-  return <pre className="text-xs text-black overflow-x-auto">{JSON.stringify(parsed, null, 2).substring(0, 500)}</pre>;
-    } catch {
-      // If it's not JSON, display as text
-      const text = String(output);
-      if (text.length > 500) {
-        return <div className="text-sm text-black whitespace-pre-wrap">{text.substring(0, 500)}...</div>;
+    return <pre className="text-xs text-black overflow-x-auto">{JSON.stringify(parsed, null, 2).substring(0, 500)}</pre>;
+      } catch {
+        // If it's not JSON, display as text
+        const text = String(output);
+        if (text.length > 500) {
+          return <div className="text-sm text-black whitespace-pre-wrap">{text.substring(0, 500)}...</div>;
+        }
+        return <div className="text-sm text-black whitespace-pre-wrap">{text}</div>;
       }
-      return <div className="text-sm text-black whitespace-pre-wrap">{text}</div>;
-    }
   };
 
   return (
@@ -242,10 +242,8 @@ export default function ChatMessage({
           </div>
         )}
 
-        {/* Assistant Message */}
         {message.role === 'assistant' && (
           <div className="space-y-3 text-black">
-            {/* Chain of Thought Execution Steps */}
             {executionSteps && executionSteps.length > 0 && (
               <ChainOfThought 
                 steps={executionSteps} 
@@ -254,19 +252,6 @@ export default function ChatMessage({
               />
             )}
             
-            {/* Thinking Indicator - Show only when streaming without steps */}
-            {isStreaming && (!executionSteps || executionSteps.length === 0) && (
-              <div className="rounded-lg bg-purple-900/20 border border-purple-800/50 p-4">
-                <div className="flex items-center gap-3">
-                  {/* Loader icon removed */}
-                  <div className="text-sm font-medium  text-black">
-                    Tilt AI is thinking...
-                  </div>
-                </div>
-              </div>
-            )}
-
-          
             {message.content && (
               <div className="rounded-2xl bg-white/10 backdrop-blur-lg text-black border border-purple-500/20 px-5 py-4 shadow-xl">
                 <ReactMarkdown 
@@ -286,13 +271,15 @@ export default function ChatMessage({
                     </div>
                   </div>
                 )}
-                <button
-                  onClick={handleCopy}
-                  className="mt-2 p-1.5 text-gray-500 hover:text-gray-700 transition-colors"
-                  title="Copy message"
-                >
-                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                </button>
+                {!isStreaming && (
+                  <button
+                    onClick={handleCopy}
+                    className="mt-2 p-1.5 text-gray-500 hover:text-gray-700 transition-colors"
+                    title="Copy message"
+                  >
+                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                )}
               </div>
             )}
           </div>

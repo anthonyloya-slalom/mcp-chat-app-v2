@@ -22,6 +22,8 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
   const [isSectionExpanded, setIsSectionExpanded] = useState(true);
   
+  if (steps.some((step: ExecutionStep) => step.tool === 'web_search')) return null;
+
   // Auto-expand running steps and auto-collapse completed steps
   useEffect(() => {
     if (steps) {
@@ -78,11 +80,11 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
     if (step.type === 'error') {
       return `Error: ${step.error?.substring(0, 80) || 'Unknown error'}`;
     }
-    if (step.type === 'thought' && step.thought) {
-      return step.thought.substring(0, 100) + (step.thought.length > 100 ? '...' : '');
-    }
     if (step.tool) {
       return `${step.tool}`;
+    }
+    if (step.type === 'thought' && step.thought) {
+      return step.thought.substring(0, 100) + (step.thought.length > 100 ? '...' : '');
     }
     return 'Processing step';
   };
@@ -91,11 +93,11 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
     if (!input) return null;
     
     if (typeof input === 'string') {
-      return <div className="text-xs text-slate-300 font-mono">{input}</div>;
+      return <div className="text-xs text-black font-mono">{input}</div>;
     }
     
     return (
-      <pre className="text-xs text-slate-300 font-mono overflow-x-auto">
+      <pre className="text-xs text-black font-mono overflow-x-auto">
         {JSON.stringify(input, null, 2)}
       </pre>
     );
@@ -112,7 +114,7 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
         const textContent = parsed.content.find((c: any) => c.type === 'text');
         if (textContent?.text) {
           return (
-            <div className="text-xs text-emerald-300 whitespace-pre-wrap">
+            <div className="text-xs text-black whitespace-pre-wrap">
               {textContent.text.substring(0, 500)}
               {textContent.text.length > 500 && '...'}
             </div>
@@ -124,11 +126,11 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
       if (parsed.rows && Array.isArray(parsed.rows)) {
         return (
           <div className="space-y-1">
-            <div className="text-xs text-emerald-400">
+            <div className="text-xs text-black">
               Result received ({parsed.rows.length} rows)
             </div>
             {parsed.rows.length > 0 && (
-              <div className="text-xs text-slate-400">
+              <div className="text-xs text-black">
                 Preview: {JSON.stringify(parsed.rows[0], null, 2).substring(0, 200)}...
               </div>
             )}
@@ -137,7 +139,7 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
       }
       
       return (
-        <pre className="text-xs text-emerald-300 overflow-x-auto">
+        <pre className="text-xs text-black overflow-x-auto">
           {JSON.stringify(parsed, null, 2).substring(0, 500)}
         </pre>
       );
@@ -152,48 +154,41 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
     }
   };
 
-  const totalSteps = steps.filter(s => s.type !== 'thought').length;
-  const completedSteps = steps.filter(s => s.status === 'completed' && s.type !== 'thought').length;
+  const totalSteps = steps.filter(s => s.stepNumber !== 0).length;
 
   return (
-    <div className="rounded-lg bg-slate-800 p-4 space-y-3">
+  <div className="rounded-lg bg-white p-4 space-y-3">
       {/* Header */}
       <div 
         className="flex items-center justify-between text-sm cursor-pointer"
         onClick={() => setIsSectionExpanded(!isSectionExpanded)}
       >
         <div className="flex items-center gap-2">
-          <span className="text-gray-400">
+          <span className="text-gray-700">
             {isSectionExpanded ? (
               <ChevronDown className="w-4 h-4" />
             ) : (
               <ChevronRight className="w-4 h-4" />
             )}
           </span>
-          <div className="text-amber-400 font-medium">
+          <div className="text-black font-medium">
             View processing steps ({totalSteps})
           </div>
         </div>
-        {totalSteps > 0 && (
-          <div className="text-sm text-gray-500">
-            {completedSteps}/{totalSteps} completed
-          </div>
-        )}
       </div>
 
-      {/* Steps - Only show if section is expanded */}
       {isSectionExpanded && (
-        <div className="space-y-2 pl-6 border-l-2 border-slate-600">
+  <div className="space-y-2 pl-6 border-l-2 border-gray-300">
           {steps.map((step, index) => {
             const isExpanded = expandedSteps.has(index);
             
             return (
               <div key={index}>
                 <div 
-                  className="flex items-start gap-2 cursor-pointer hover:bg-slate-700/30 rounded p-1 -ml-1 transition-colors"
+                  className="flex items-start gap-2 cursor-pointer hover:bg-gray-100 rounded p-1 -ml-1 transition-colors"
                   onClick={() => toggleStep(index)}
                 >
-                  <span className="text-gray-500 mt-0.5">
+                  <span className="text-gray-700 mt-0.5">
                     {isExpanded ? (
                       <ChevronDown className="w-3 h-3" />
                     ) : (
@@ -201,42 +196,34 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
                     )}
                   </span>
                   {getStepIcon(step)}
-                  <div className="flex-1 text-sm text-gray-200">
+                  <div className="flex-1 text-sm text-black">
                     {getStepTitle(step)}
                   </div>
                 </div>
               
                 {/* Expanded content */}
                 {isExpanded && (
-                  <div className="ml-10 mt-2 space-y-2 text-xs">
+                  <div className="ml-10 mt-2 space-y-2 text-xs text-black">
                     {step.tool && step.input && (
                       <div className="space-y-1">
-                        <div className="text-slate-400 font-medium">
-                          {step.tool}
-                        </div>
-                        <div className="pl-4 border-l border-slate-600">
-                          {formatInput(step.input)}
+                        <div className="pl-4 border-l border-gray-300">
+                          <span className="text-black">{formatInput(step.input)}</span>
                         </div>
                       </div>
                     )}
-                    
                     {step.output && (
                       <div className="space-y-1">
-                        <div className="text-emerald-400 font-medium">
-                          Result received
-                        </div>
-                        <div className="pl-4 border-l border-emerald-900/50">
-                          {formatOutput(step.output)}
+                        <div className="pl-4 border-l border-gray-300">
+                          <span className="text-black">{formatOutput(step.output)}</span>
                         </div>
                       </div>
                     )}
-                    
                     {step.type === 'thought' && step.thought && (
-                      <div className="text-slate-300 italic">
+                      <div className="text-black italic">
                         {step.thought}
                       </div>
                     )}
-                    
+
                     {/* Error display */}
                     {(step.type === 'error' || step.status === 'error') && (
                       <div className="space-y-2">

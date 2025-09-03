@@ -1,70 +1,70 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer base {
-  :root {
-    /* Dark theme by default - Vercel style */
-  --background: 0 0% 100%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --radius: 0.5rem;
-  }
-
-  .light {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-  }
+/* CSS Variables for themes */
+:root {
+  /* Dark theme by default - Vercel style */
+  --background: #fff;
+  --foreground: #fafafa;
+  --card: #121212;
+  --card-foreground: #fafafa;
+  --popover: #121212;
+  --popover-foreground: #fafafa;
+  --primary: #fafafa;
+  --primary-foreground: #181818;
+  --secondary: #262626;
+  --secondary-foreground: #fafafa;
+  --muted: #262626;
+  --muted-foreground: #a2a2a2;
+  --accent: #262626;
+  --accent-foreground: #fafafa;
+  --destructive: #b91c1c;
+  --destructive-foreground: #fafafa;
+  --border: #262626;
+  --input: #262626;
+  --ring: #d4d4d4;
+  --radius: 0.5rem;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+.light {
+  --background: #fff;
+  --foreground: #090909;
+  --card: #fff;
+  --card-foreground: #090909;
+  --popover: #fff;
+  --popover-foreground: #090909;
+  --primary: #181818;
+  --primary-foreground: #fafafa;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #181818;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --accent: #f5f5f5;
+  --accent-foreground: #181818;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #090909;
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, sans-serif;
 }
 
 html, body {
-  @apply h-full;
+  height: 100%;
 }
 
 #__next {
-  @apply h-full;
+  height: 100%;
 }
 
 /* Custom scrollbar styles */
@@ -74,49 +74,61 @@ html, body {
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  background: #f3f4f6;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 rounded-full;
+  background: #9ca3af;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-500;
+  background: #6b7280;
 }
 
 /* Markdown content styling */
 .prose pre {
-  @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm;
+  background: #18181b;
+  color: #f3f4f6;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-size: 0.875rem;
 }
 
 .prose code {
-  @apply font-mono text-sm bg-gray-100 px-1 py-0.5 rounded;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.875rem;
+  background: #f3f4f6;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
 }
 
 .prose pre code {
-  @apply bg-transparent p-0;
+  background: transparent;
+  padding: 0;
 }
 
 /* SQL syntax highlighting */
 .sql-keyword {
-  @apply text-blue-600 font-semibold;
+  color: #2563eb;
+  font-weight: 600;
 }
 
 .sql-function {
-  @apply text-purple-600;
+  color: #8b5cf6;
 }
 
 .sql-string {
-  @apply text-green-600;
+  color: #22c55e;
 }
 
 .sql-number {
-  @apply text-purple-600;
+  color: #8b5cf6;
 }
 
 .sql-operator {
-  @apply text-red-600;
+  color: #ef4444;
 }
 
 /* Animation classes */
@@ -236,7 +248,7 @@ html, body {
   }
   
   .prose pre {
-    @apply text-xs;
+    font-size: 0.75rem;
   }
 }
 

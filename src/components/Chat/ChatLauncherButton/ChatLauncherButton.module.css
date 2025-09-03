@@ -1,6 +1,6 @@
 .chatWindow {
   position: fixed;
-  bottom: 2.5rem; /* 10 * 0.25rem */
+  bottom: 2.5rem; 
   right: 2.5rem;
   z-index: 50;
   width: 500px;
@@ -21,6 +21,7 @@
   width: 64px !important;
   height: 64px !important;
   transition: background 0.2s;
+  border: none;
 }
 
 .avatar {

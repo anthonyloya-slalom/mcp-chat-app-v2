@@ -1,7 +1,7 @@
 .root {
   display: flex;
   gap: 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.1rem; 
 }
 
 .justifyEnd {
@@ -22,49 +22,46 @@
 }
 
 .userBubble {
-  border-radius: 1rem; /* Less round */
-  background: #7c3aed; /* purple-600 */
+  border-radius: 1rem;
+  background: #7c3aed;
   color: #fff;
-  padding: 1rem 1.25rem;
+  padding: 0.25rem 0.75rem; 
   box-shadow: 0 10px 40px rgba(80, 0, 120, 0.15);
 }
 
 .userMarkdown {
-  /* prose prose-sm prose-invert max-w-none */
   font-size: 0.95rem;
   color: #fff;
   max-width: none;
-  line-height: 1.6;
+  line-height: 1.3;
 }
 
 .assistantContainer {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
   color: #000;
 }
 
 .assistantBubble {
-  border-radius: 1rem; /* Less round */
+  border-radius: 1rem;
   background: rgba(255,255,255,0.10);
   backdrop-filter: blur(8px);
   color: #000;
-  border: 1px solid rgba(139, 92, 246, 0.2); /* purple-500/20 */
-  padding: 1rem 1.25rem;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  padding: 0.25rem 1.25rem 0.25rem 1.25rem;
   box-shadow: 0 10px 40px rgba(80, 0, 120, 0.15);
 }
 
 .assistantMarkdown {
-  /* prose prose-sm max-w-none text-black */
   font-size: 0.95rem;
   color: #000;
   max-width: none;
-  line-height: 1.6;
+  line-height: 1.3;
 }
 
 .queryDataSection {
   margin-top: 1rem;
-  border-top: 1px solid #c4b5fd; /* purple-300 */
+  border-top: 1px solid #c4b5fd;
   padding-top: 1rem;
 }
 
@@ -80,5 +77,5 @@
 }
 
 .queryDataAddress {
-  color: #7c3aed; /* purple-700 */
+  color: #7c3aed; 
 }

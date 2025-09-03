@@ -198,7 +198,7 @@ async function callTool(toolName: string, args: any): Promise<any> {
 
 // Helper to call Claude via Bedrock
 async function callClaudeBedrock(prompt: string): Promise<string> {
-  const client = new BedrockRuntimeClient({ region: "us-east-1" }); // Change region if needed
+  const client = new BedrockRuntimeClient({ region: "us-east-2" }); // Ohio region
 
   // Use Claude Opus 4.1 - the latest and most capable model
   // This requires proper IAM permissions to access

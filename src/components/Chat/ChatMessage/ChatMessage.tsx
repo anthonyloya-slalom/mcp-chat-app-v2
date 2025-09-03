@@ -121,6 +121,8 @@ export default function ChatMessage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [message.content]);
 
+  const hasError = executionSteps?.some(step => step.type === 'error' || step.status === 'error');
+
   return (
     <div
       className={
@@ -154,7 +156,7 @@ export default function ChatMessage({
                   remarkPlugins={[remarkGfm]}
                   className={styles.assistantMarkdown}
                 >
-                  {message.content}
+                  {hasError ? "An error occurred." : message.content}
                 </ReactMarkdown>
                 {queryData && queryData.length > 0 && (
                   <div className={styles.queryDataSection}>

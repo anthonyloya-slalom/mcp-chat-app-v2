@@ -270,9 +270,9 @@ export default function ChatUI({ onClose }: ChatUIProps) {
   };
 
   const exampleQueries = [
-    { text: 'How common is it to have intermittent vs continuous caregiving leaves?' },
-    { text: 'What is the typical duration of a caregiving leave for us?' },
-    { text: 'How are intermittent vs continuous leaves trending over the past year?' },
+    { text: 'What is the typical duration of a caregiving leave for our company?' },
+    { text: 'Show me all pending leaves and their status' },
+    { text: 'What\'s the most popular month for beginning a leave?' },
   ];
 
   return (

@@ -1,12 +1,10 @@
-import { ReactNode } from 'react';
-
-interface PromptBubbleProps {
+interface PromptMessageButtonProps {
   text: string;
   description?: string;
   onClick?: () => void;
 }
 
-export default function PromptBubble({ text, description, onClick }: PromptBubbleProps) {
+export default function PromptMessageButton({ text, description, onClick }: PromptMessageButtonProps) {
   return (
     <button
       onClick={onClick}

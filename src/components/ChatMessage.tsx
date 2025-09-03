@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Message } from '../lib/types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Check, Copy } from 'lucide-react';
 import ChainOfThought from './ChainOfThought';
 
 interface ExecutionStep {
@@ -152,12 +151,6 @@ export default function ChatMessage({
     extractDataFromContent();
   }, [message.content]);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(message.content);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   const formatToolOutput = (output: any) => {
     try {
       const parsed = typeof output === 'string' ? JSON.parse(output) : output;
@@ -260,15 +253,6 @@ export default function ChatMessage({
                       ))}
                     </div>
                   </div>
-                )}
-                {!isStreaming && (
-                  <button
-                    onClick={handleCopy}
-                    className="mt-2 p-1.5 text-gray-500 hover:text-gray-700 transition-colors"
-                    title="Copy message"
-                  >
-                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  </button>
                 )}
               </div>
             )}

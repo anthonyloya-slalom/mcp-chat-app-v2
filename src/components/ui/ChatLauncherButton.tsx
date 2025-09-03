@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import ChatUI from '../ChatUI';
 
-export default function ChatLauncher() {
+export default function ChatLauncherButton() {
   const [open, setOpen] = useState(false);
   return (
     <>

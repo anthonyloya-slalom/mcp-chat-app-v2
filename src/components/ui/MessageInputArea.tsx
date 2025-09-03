@@ -2,14 +2,14 @@ import { useRef } from 'react';
 import { cn } from '../../lib/utils';
 import { Send, Loader2 } from 'lucide-react';
 
-interface MessageInputBoxProps {
+interface MessageInputAreaProps {
   inputValue: string;
   setInputValue: (val: string) => void;
   handleSendMessage: (content: string) => void;
   isProcessing: boolean;
 }
 
-export default function MessageInputBox({ inputValue, setInputValue, handleSendMessage, isProcessing }: MessageInputBoxProps) {
+export default function MessageInputArea({ inputValue, setInputValue, handleSendMessage, isProcessing }: MessageInputAreaProps) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   return (

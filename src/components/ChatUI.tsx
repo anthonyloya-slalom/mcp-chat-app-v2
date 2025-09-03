@@ -1,12 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { Toaster, toast } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { useConversationStore } from '../lib/store';
 import { Message } from '../lib/types';
 import { cn } from '../lib/utils';
-import { Loader2, Bot, User, X as XIcon } from 'lucide-react';
-import PromptBubble from './ui/promptBubble';
-import MessageInputBox from './ui/messageInputBox';
-import Greeting from './ui/greeting';
+import { X as XIcon } from 'lucide-react';
+import PromptMessageButton from './ui/PromptMessageButton';
+import MessageInputArea from './ui/MessageInputArea';
 import ChatMessage from './ChatMessage';
 
 interface ExecutionStep {
@@ -339,11 +338,17 @@ export default function ChatUI({ onClose }: ChatUIProps) {
           {messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center min-h-[60vh] py-0 w-full">
               <div className="flex flex-col items-center w-full" style={{ marginTop: '-12vh' }}>
-                <Greeting />
+                <div className="flex flex-col items-center">
+                  <h2 className="text-2xl font-bold text-black mb-2">Hi, I'm Tilda!</h2>
+                  <p className="text-sm text-gray-600 mb-4 text-center max-w-md">
+                    Ask me about leave insights, and I'll get you<br />
+                    the info you need.
+                  </p>
+                </div>
                 <div className="w-full max-w-2xl space-y-2 flex flex-col items-start mt-2">
                   <p className="text-sm text-black mb-4 font-medium text-left">Try asking:</p>
                   {exampleQueries.map((query, index) => (
-                    <PromptBubble
+                    <PromptMessageButton
                       key={index}
                       text={query.text}
                       onClick={() => handleSendMessage(query.text)}
@@ -371,7 +376,7 @@ export default function ChatUI({ onClose }: ChatUIProps) {
           )}
         </div>
       </div>
-      <MessageInputBox
+      <MessageInputArea
         inputValue={inputValue}
         setInputValue={setInputValue}
         handleSendMessage={handleSendMessage}

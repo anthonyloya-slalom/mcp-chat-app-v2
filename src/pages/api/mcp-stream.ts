@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ChatAnthropic } from '@langchain/anthropic';
-import { searchWeb, fetchWebPage } from '../../lib/langchain-tools';
 import { searchLeaveData } from '../../lib/mock-leave-data';
+import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
 
 const MCP_BASE_URL = 'http://localhost:8000';
 const MCP_SSE_URL = `${MCP_BASE_URL}/sse`;
@@ -192,35 +192,35 @@ async function callTool(toolName: string, args: any): Promise<any> {
     };
   }
   
-  // Handle web tools
-  if (toolName === 'web_search') {
-    const query = args.query || args.search_query;
-    if (!query) throw new Error('web_search requires a query parameter');
-    
-    const results = await searchWeb(query);
-    return {
-      content: [{
-        type: 'text',
-        text: JSON.stringify(results, null, 2)
-      }]
-    };
-  }
-  
-  if (toolName === 'fetch_webpage') {
-    const url = args.url;
-    if (!url) throw new Error('fetch_webpage requires a url parameter');
-    
-    const content = await fetchWebPage(url);
-    return {
-      content: [{
-        type: 'text',
-        text: content
-      }]
-    };
-  }
-  
   // Default to MCP tools
   return callMCPTool(toolName, args);
+}
+
+// Helper to call Claude via Bedrock
+async function callClaudeBedrock(prompt: string): Promise<string> {
+  const client = new BedrockRuntimeClient({ region: "us-east-1" }); // Change region if needed
+
+  // Claude 3 Opus model ID for Bedrock
+  const modelId = "anthropic.claude-3-opus-20240229-v1:0";
+
+  const body = JSON.stringify({
+    prompt,
+    max_tokens_to_sample: 2000,
+    temperature: 0,
+    stop_sequences: ["\n\n"],
+  });
+
+  const command = new InvokeModelCommand({
+    modelId,
+    contentType: "application/json",
+    accept: "application/json",
+    body,
+  });
+
+  const response = await client.send(command);
+  const responseBody = JSON.parse(new TextDecoder().decode(response.body));
+  // Adjust this depending on Bedrock's response structure
+  return responseBody.completion || responseBody.result || "";
 }
 
 export default async function handler(
@@ -273,13 +273,6 @@ export default async function handler(
     
     sendEvent('start', { message: 'Starting MCP Agent', input });
     
-    const claude = new ChatAnthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-      modelName: 'claude-3-opus-20240229',
-      temperature: 0,
-      maxTokens: 2000,
-    });
-    
     // Build context from conversation history
     let contextSummary = '';
     if (previousMessages && previousMessages.length > 0) {
@@ -315,21 +308,20 @@ IMPORTANT:
 - Base your Final Answer on the actual data returned from the tools`;
     
     let conversationHistory = '';
-    const maxSteps = 15; // Allow more steps to complete complex queries
-    const failedTools = new Map<string, number>(); // Track failed tool calls
-    let hasSuccessfulToolCall = false; // Track if we've had at least one successful tool call
-    let actualSteps = 0; // Track actual number of steps taken
-    
+    const maxSteps = 15;
+    const failedTools = new Map<string, number>();
+    let hasSuccessfulToolCall = false;
+    let actualSteps = 0;
+
     for (let i = 0; i < maxSteps; i++) {
       actualSteps = i + 1;
-      console.log(`\n📍 Step ${i + 1}/${maxSteps} - Starting...`);
-      
       sendEvent('step', {
         stepNumber: i + 1,
         status: 'thinking',
         message: 'Tilt AI is thinking...'
       });
-      
+
+      // 👇👇👇 FIX: define prompt here before using it!
       const prompt = `${systemPrompt}
 
 User Question: ${input}
@@ -339,13 +331,9 @@ ${conversationHistory}
 
 What is your next thought and action? Remember to keep Action Input JSON on a single line.`;
 
-      console.log(`🤔 Sending prompt to Claude...`);
-      const response = await claude.invoke(prompt);
-      const responseText = response.content.toString();
-      
-      console.log(`✅ Claude responded (${responseText.length} chars)`);
-      console.log(`📄 Full response:`, responseText);
-      
+      // 👇 Use Bedrock Claude here
+      const responseText = await callClaudeBedrock(prompt);
+
       // Check for final answer
       const finalAnswerMatch = responseText.match(/^Final Answer:\s*(.+)$/m);
       console.log(`🔍 Final Answer match:`, !!finalAnswerMatch);

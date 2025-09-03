@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const MCP_API_URL = 'https://31cb41958507.ngrok-free.app/sse';
+const MCP_API_URL = 'https://mcp.ourtilt.ai/mcp/sse';
 
 async function initMCPSession(): Promise<string> {
   const initResponse = await fetch(MCP_API_URL, {

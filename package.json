@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/bedrock-sdk": "^0.24.0",
     "@anthropic-ai/sdk": "^0.20.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.879.0",
     "@langchain/anthropic": "^0.1.0",
     "@langchain/community": "^0.0.20",
     "@radix-ui/react-avatar": "^1.1.10",

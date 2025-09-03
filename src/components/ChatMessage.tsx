@@ -13,7 +13,6 @@ interface ExecutionStep {
   thought?: string;
   error?: string;
   status: 'pending' | 'running' | 'completed' | 'error';
-  stepNumber?: number;
 }
 
 interface ChatMessageProps {

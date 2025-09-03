@@ -337,17 +337,19 @@ export default function ChatUI({ onClose }: ChatUIProps) {
       <div className={messages.length === 0 ? "flex-1 overflow-hidden" : "flex-1 overflow-y-auto"}>
         <div className="container mx-auto max-w-4xl px-4 py-6">
           {messages.length === 0 ? (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] py-12">
-              <Greeting />
-              <div className="w-full max-w-2xl space-y-3">
-                <p className="text-sm text-black mb-4 font-medium">Try asking:</p>
-                {exampleQueries.map((query, index) => (
-                  <PromptBubble
-                    key={index}
-                    text={query.text}
-                    onClick={() => handleSendMessage(query.text)}
-                  />
-                ))}
+            <div className="flex flex-col items-center justify-center min-h-[60vh] py-0 w-full">
+              <div className="flex flex-col items-center w-full" style={{ marginTop: '-12vh' }}>
+                <Greeting />
+                <div className="w-full max-w-2xl space-y-2 flex flex-col items-start mt-2">
+                  <p className="text-sm text-black mb-4 font-medium text-left">Try asking:</p>
+                  {exampleQueries.map((query, index) => (
+                    <PromptBubble
+                      key={index}
+                      text={query.text}
+                      onClick={() => handleSendMessage(query.text)}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           ) : (

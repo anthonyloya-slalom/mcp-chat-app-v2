@@ -29,7 +29,6 @@ export default function ChatMessage({
   executionSteps,
   onRetryStep 
 }: ChatMessageProps) {
-  const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
   const [copied, setCopied] = useState(false);
   const [queryData, setQueryData] = useState<any>(null);
   
@@ -39,14 +38,6 @@ export default function ChatMessage({
       const runningStepIndices = executionSteps
         .map((step, index) => step.status === 'running' ? index : -1)
         .filter(index => index !== -1);
-      
-      if (runningStepIndices.length > 0) {
-        setExpandedSteps(prev => {
-          const newSet = new Set(prev);
-          runningStepIndices.forEach(index => newSet.add(index));
-          return newSet;
-        });
-      }
     }
   }, [executionSteps, isStreaming]);
 

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Message, ThoughtProcess, ToolStep } from './types';
+import { Message, ToolStep } from './types';
 import { LLMProvider } from './llm-provider';
 
 interface ConversationState {

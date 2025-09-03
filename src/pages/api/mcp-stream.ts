@@ -200,14 +200,21 @@ async function callTool(toolName: string, args: any): Promise<any> {
 async function callClaudeBedrock(prompt: string): Promise<string> {
   const client = new BedrockRuntimeClient({ region: "us-east-1" }); // Change region if needed
 
-  // Claude 3 Opus model ID for Bedrock
-  const modelId = "anthropic.claude-3-opus-20240229-v1:0";
+  // Use Claude Opus 4.1 - the latest and most capable model
+  // This requires proper IAM permissions to access
+  const modelId = "anthropic.claude-opus-4-1-20250805-v1:0";
 
+  // Claude 3 models use the Messages API format
   const body = JSON.stringify({
-    prompt,
-    max_tokens_to_sample: 2000,
+    anthropic_version: "bedrock-2023-05-31",
+    max_tokens: 2000,
     temperature: 0,
-    stop_sequences: ["\n\n"],
+    messages: [
+      {
+        role: "user",
+        content: prompt
+      }
+    ]
   });
 
   const command = new InvokeModelCommand({
@@ -219,7 +226,13 @@ async function callClaudeBedrock(prompt: string): Promise<string> {
 
   const response = await client.send(command);
   const responseBody = JSON.parse(new TextDecoder().decode(response.body));
-  // Adjust this depending on Bedrock's response structure
+  
+  // Claude 3 response format
+  if (responseBody.content && Array.isArray(responseBody.content)) {
+    return responseBody.content[0]?.text || "";
+  }
+  
+  // Fallback for other response formats
   return responseBody.completion || responseBody.result || "";
 }
 
@@ -482,8 +495,7 @@ Provide a clear, data-driven answer based on the tool results above.
 
 Final Answer:`;
 
-      const finalResponse = await claude.invoke(finalPrompt);
-      const finalAnswer = finalResponse.content.toString();
+      const finalAnswer = await callClaudeBedrock(finalPrompt);
       
       sendEvent('final', {
         answer: finalAnswer,

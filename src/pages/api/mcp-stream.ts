@@ -200,9 +200,9 @@ async function callTool(toolName: string, args: any): Promise<any> {
 async function callClaudeBedrock(prompt: string): Promise<string> {
   const client = new BedrockRuntimeClient({ region: "us-east-2" }); // Ohio region
 
-  // Use Claude Opus 4.1 - the latest and most capable model
-  // This requires proper IAM permissions to access
-  const modelId = "anthropic.claude-opus-4-1-20250805-v1:0";
+  // Use the cross-region inference profile for Claude Opus 4.1
+  // This uses the inference profile which is required for Opus model
+  const modelId = "us.anthropic.claude-opus-4-1-20250805-v1:0";
 
   // Claude 3 models use the Messages API format
   const body = JSON.stringify({

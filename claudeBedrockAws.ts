@@ -13,7 +13,7 @@ const client = new AnthropicBedrock({
 
 async function main() {
   const message = await client.messages.create({
-    model: 'anthropic.claude-opus-4-1-20250805-v1:0',
+    model: 'us.anthropic.claude-opus-4-1-20250805-v1:0',
     max_tokens: 256,
     messages: [{"role": "user", "content": "Hello, world"}]
   });

@@ -1,0 +1,31 @@
+.button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e5e7eb; /* gray-200 */
+  transition: background 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+
+.button:hover,
+.button:focus-visible {
+  background: rgba(255,255,255,0.10);
+  border-color: #d1d5db; /* gray-300 */
+}
+
+.content {
+  flex: 1;
+  text-align: left;
+}
+
+.text {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #000;
+  margin: 0;
+}

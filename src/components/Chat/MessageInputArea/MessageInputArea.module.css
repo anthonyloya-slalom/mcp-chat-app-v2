@@ -1,0 +1,96 @@
+.wrapper {
+  position: relative;
+  z-index: 10;
+  background: #fff;
+  border-top: 1px solid rgba(139, 92, 246, 0.1); /* purple-500/10 */
+}
+
+.gradientBg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(124, 58, 237, 0.05) 0%,
+    transparent 50%,
+    rgba(168, 139, 250, 0.05) 100%
+  );
+  pointer-events: none;
+}
+
+.innerContainer {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 56rem; /* max-w-4xl */
+  padding: 1.25rem 1rem; /* py-5 px-4 */
+  
+}
+
+.inputContainer {
+  position: relative;
+}
+
+.textarea {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  color: #000;
+  border-radius: 2rem; /* Increased for more rounded corners */
+  border: 1px solid rgba(139, 92, 246, 0.2); /* purple-500/20 */
+  font-size: 0.95rem;
+  padding: 0.875rem 3.5rem 0.875rem 1.25rem; /* py-3.5 pr-14 px-5 */
+  min-height: 52px;
+  max-height: 200px;
+  resize: none;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.textarea::placeholder {
+  color: #6b7280; /* gray-500 */
+  opacity: 1;
+}
+
+.textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sendButton {
+  position: absolute !important;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.625rem !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.2s;
+  z-index: 2;
+  background: linear-gradient(90deg, #a78bfa 0%, #7c3aed 100%);
+  color: #fff !important;
+}
+
+.sendButton:disabled {
+  background: none !important;
+  color: #6b7280 !important; /* gray-600 */
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+}
+
+.iconSpin {
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

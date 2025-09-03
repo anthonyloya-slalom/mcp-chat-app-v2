@@ -1,0 +1,38 @@
+.root {
+  position: relative;
+  overflow: hidden;
+}
+
+.viewport {
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+}
+
+.scrollbar {
+  display: flex;
+  touch-action: none;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.vertical {
+  height: 100%;
+  width: 10px;
+  border-left: 1px solid transparent;
+  padding: 1px;
+}
+
+.horizontal {
+  height: 10px;
+  flex-direction: column;
+  border-top: 1px solid transparent;
+  padding: 1px;
+}
+
+.thumb {
+  position: relative;
+  flex: 1;
+  border-radius: 9999px;
+  background: #e5e7eb;
+}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
+import styles from './ChainOfThought.module.css';
 
 interface ExecutionStep {
   type: 'action' | 'result' | 'thought' | 'error';
@@ -21,31 +22,24 @@ interface ChainOfThoughtProps {
 export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfThoughtProps) {
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
   const [isSectionExpanded, setIsSectionExpanded] = useState(true);
-  
+
   if (steps.some((step: ExecutionStep) => step.tool === 'web_search')) return null;
 
-  // Auto-expand running steps and auto-collapse completed steps
   useEffect(() => {
     if (steps) {
       const newExpanded = new Set<number>();
-      
       steps.forEach((step, index) => {
-        // Auto-expand running steps
         if (step.status === 'running') {
           newExpanded.add(index);
-        }
-        // Keep previously expanded steps expanded unless completed
-        else if (expandedSteps.has(index) && step.status !== 'completed') {
+        } else if (expandedSteps.has(index) && step.status !== 'completed') {
           newExpanded.add(index);
-        }
-        // Auto-expand error steps
-        else if (step.status === 'error') {
+        } else if (step.status === 'error') {
           newExpanded.add(index);
         }
       });
-      
       setExpandedSteps(newExpanded);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [steps]);
 
   const toggleStep = (index: number) => {
@@ -62,17 +56,16 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
 
   const getStepIcon = (step: ExecutionStep) => {
     if (step.type === 'error' || step.status === 'error') {
-      return <span className="text-red-400 text-base">✗</span>;
+      return <span style={{ color: '#f87171', fontSize: '1rem' }}>✗</span>;
     }
-    
     switch (step.status) {
       case 'running':
-        return <span className="text-amber-400 text-base animate-pulse">○</span>;
+        return <span className={styles.loadingIcon} style={{ fontSize: '1rem' }}>○</span>;
       case 'completed':
-        return <span className="text-green-500 text-base">✓</span>;
+        return <span style={{ color: '#22c55e', fontSize: '1rem' }}>✓</span>;
       case 'pending':
       default:
-        return <span className="text-gray-500 text-base">○</span>;
+        return <span style={{ color: '#6b7280', fontSize: '1rem' }}>○</span>;
     }
   };
 
@@ -91,13 +84,11 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
 
   const formatInput = (input: any) => {
     if (!input) return null;
-    
     if (typeof input === 'string') {
-      return <div className="text-xs text-black font-mono">{input}</div>;
+      return <div className={styles.inputText}>{input}</div>;
     }
-    
     return (
-      <pre className="text-xs text-black font-mono overflow-x-auto">
+      <pre className={styles.inputText}>
         {JSON.stringify(input, null, 2)}
       </pre>
     );
@@ -105,48 +96,42 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
 
   const formatOutput = (output: any) => {
     if (!output) return null;
-    
     try {
       const parsed = typeof output === 'string' ? JSON.parse(output) : output;
-      
-      // Handle MCP response format
       if (parsed.content && Array.isArray(parsed.content)) {
         const textContent = parsed.content.find((c: any) => c.type === 'text');
         if (textContent?.text) {
           return (
-            <div className="text-xs text-black whitespace-pre-wrap">
+            <div className={styles.outputText}>
               {textContent.text.substring(0, 500)}
               {textContent.text.length > 500 && '...'}
             </div>
           );
         }
       }
-      
-      // Handle SQL query results
       if (parsed.rows && Array.isArray(parsed.rows)) {
         return (
-          <div className="space-y-1">
-            <div className="text-xs text-black">
+          <div>
+            <div className={styles.outputText}>
               Result received ({parsed.rows.length} rows)
             </div>
             {parsed.rows.length > 0 && (
-              <div className="text-xs text-black">
+              <div className={styles.outputText}>
                 Preview: {JSON.stringify(parsed.rows[0], null, 2).substring(0, 200)}...
               </div>
             )}
           </div>
         );
       }
-      
       return (
-        <pre className="text-xs text-black overflow-x-auto">
+        <pre className={styles.outputText}>
           {JSON.stringify(parsed, null, 2).substring(0, 500)}
         </pre>
       );
     } catch {
       const text = String(output);
       return (
-        <div className="text-xs text-emerald-300 whitespace-pre-wrap">
+        <div className={styles.outputText}>
           {text.substring(0, 500)}
           {text.length > 500 && '...'}
         </div>
@@ -157,80 +142,79 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
   const totalSteps = steps.filter(s => s.stepNumber !== 0).length;
 
   return (
-  <div className="rounded-lg bg-white p-4 space-y-3">
+    <div className={styles.container}>
       {/* Header */}
-      <div 
-        className="flex items-center justify-between text-sm cursor-pointer"
+      <div
+        className={styles.header}
         onClick={() => setIsSectionExpanded(!isSectionExpanded)}
       >
-        <div className="flex items-center gap-2">
-          <span className="text-gray-700">
+        <div className={styles.headerContent}>
+          <span className={styles.headerIcon}>
             {isSectionExpanded ? (
-              <ChevronDown className="w-4 h-4" />
+              <ChevronDown width={16} height={16} />
             ) : (
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight width={16} height={16} />
             )}
           </span>
-          <div className="text-black font-medium">
+          <div className={styles.headerTitle}>
             View processing steps ({totalSteps})
           </div>
         </div>
       </div>
 
       {isSectionExpanded && (
-  <div className="space-y-2 pl-6 border-l-2 border-gray-300">
+        <div className={styles.stepsSection}>
           {steps.map((step, index) => {
             const isExpanded = expandedSteps.has(index);
-            
             return (
               <div key={index}>
-                <div 
-                  className="flex items-start gap-2 cursor-pointer hover:bg-gray-100 rounded p-1 -ml-1 transition-colors"
+                <div
+                  className={styles.stepRow}
                   onClick={() => toggleStep(index)}
                 >
-                  <span className="text-gray-700 mt-0.5">
+                  <span className={styles.stepChevron}>
                     {isExpanded ? (
-                      <ChevronDown className="w-3 h-3" />
+                      <ChevronDown width={12} height={12} />
                     ) : (
-                      <ChevronRight className="w-3 h-3" />
+                      <ChevronRight width={12} height={12} />
                     )}
                   </span>
                   {getStepIcon(step)}
-                  <div className="flex-1 text-sm text-black">
+                  <div className={styles.stepTitle}>
                     {getStepTitle(step)}
                   </div>
                 </div>
-              
+
                 {/* Expanded content */}
                 {isExpanded && (
-                  <div className="ml-10 mt-2 space-y-2 text-xs text-black">
+                  <div className={styles.expandedContent}>
                     {step.tool && step.input && (
-                      <div className="space-y-1">
-                        <div className="pl-4 border-l border-gray-300">
-                          <span className="text-black">{formatInput(step.input)}</span>
+                      <div className={styles.inputOutputBlock}>
+                        <div className={styles.inputOutputInner}>
+                          <span>{formatInput(step.input)}</span>
                         </div>
                       </div>
                     )}
                     {step.output && (
-                      <div className="space-y-1">
-                        <div className="pl-4 border-l border-gray-300">
-                          <span className="text-black">{formatOutput(step.output)}</span>
+                      <div className={styles.inputOutputBlock}>
+                        <div className={styles.inputOutputInner}>
+                          <span>{formatOutput(step.output)}</span>
                         </div>
                       </div>
                     )}
                     {step.type === 'thought' && step.thought && (
-                      <div className="text-black italic">
+                      <div className={styles.thoughtText}>
                         {step.thought}
                       </div>
                     )}
 
                     {/* Error display */}
                     {(step.type === 'error' || step.status === 'error') && (
-                      <div className="space-y-2">
-                        <div className="text-red-400 font-medium">
+                      <div className={styles.errorBlock}>
+                        <div className={styles.errorTitle}>
                           Error occurred
                         </div>
-                        <div className="pl-4 border-l border-red-900/50 text-red-300">
+                        <div className={styles.errorDetails}>
                           {step.error || 'An unexpected error occurred'}
                         </div>
                         {onRetry && (
@@ -239,7 +223,7 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
                               e.stopPropagation();
                               onRetry(index);
                             }}
-                            className="ml-4 text-xs text-amber-400 hover:text-amber-300 transition-colors"
+                            className={styles.retryButton}
                           >
                             Retry this step
                           </button>
@@ -256,8 +240,8 @@ export default function ChainOfThought({ steps, isStreaming, onRetry }: ChainOfT
 
       {/* Loading indicator */}
       {isSectionExpanded && isStreaming && steps.length === 0 && (
-        <div className="flex items-center gap-2 text-sm text-slate-400 pl-6">
-          <span className="text-amber-400 animate-pulse">○</span>
+        <div className={styles.loadingRow}>
+          <span className={styles.loadingIcon}>○</span>
           <span>Processing...</span>
         </div>
       )}

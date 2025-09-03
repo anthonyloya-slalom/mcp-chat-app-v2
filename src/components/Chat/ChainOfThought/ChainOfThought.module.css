@@ -1,0 +1,160 @@
+.container {
+  border-radius: 0.75rem;
+  background: #fff;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.headerIcon {
+  color: #374151;
+}
+
+.headerTitle {
+  color: #000;
+  font-weight: 500;
+}
+
+.stepsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1.5rem;
+  border-left: 2px solid #d1d5db;
+}
+
+.stepRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  margin-left: -0.25rem;
+  transition: background 0.2s;
+}
+
+.stepRow:hover {
+  background: #f3f4f6;
+}
+
+.stepChevron {
+  color: #374151;
+  margin-top: 0.125rem;
+}
+
+.stepIcon {
+  display: flex;
+  align-items: center;
+}
+
+.stepTitle {
+  flex: 1;
+  font-size: 0.95rem;
+  color: #000;
+}
+
+.expandedContent {
+  margin-left: 2.5rem;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #000;
+}
+
+.inputOutputBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.inputOutputInner {
+  padding-left: 1rem;
+  border-left: 1px solid #d1d5db;
+}
+
+.inputText,
+.outputText,
+.outputPre {
+  font-size: 0.8rem;
+  color: #000;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.outputText {
+  color: #059669;
+}
+
+.errorBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.errorTitle {
+  color: #f87171;
+  font-weight: 500;
+}
+
+.errorDetails {
+  padding-left: 1rem;
+  border-left: 1px solid rgba(136,19,55,0.5);
+  color: #fca5a5;
+}
+
+.retryButton {
+  margin-left: 1rem;
+  font-size: 0.8rem;
+  color: #fbbf24;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.retryButton:hover {
+  color: #fde68a;
+}
+
+.thoughtText {
+  color: #000;
+  font-style: italic;
+}
+
+.loadingRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #94a3b8;
+  padding-left: 1.5rem;
+}
+
+.loadingIcon {
+  color: #fbbf24;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

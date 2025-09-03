@@ -1,3 +1,5 @@
+import styles from './PromptMessageButton.module.css';
+
 interface PromptMessageButtonProps {
   text: string;
   description?: string;
@@ -8,10 +10,11 @@ export default function PromptMessageButton({ text, description, onClick }: Prom
   return (
     <button
       onClick={onClick}
-      className="w-full flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-gray-200 hover:border-gray-300 transition-all group"
+      className={styles.button}
+      type="button"
     >
-      <div className="flex-1 text-left">
-        <p className="text-sm font-medium text-black">{text}</p>
+      <div className={styles.content}>
+        <p className={styles.text}>{text}</p>
         {description}
       </div>
     </button>

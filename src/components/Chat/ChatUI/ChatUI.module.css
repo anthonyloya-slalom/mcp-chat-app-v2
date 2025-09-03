@@ -1,0 +1,127 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+}
+
+.header {
+  width: 100%;
+  background: #000;
+  padding: 0.75rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerTitle {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.closeButton {
+  margin-left: auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.closeIcon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #fff;
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.bodyEmpty {
+  flex: 1;
+  overflow: hidden;
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 56rem; /* 4xl */
+  padding: 1.5rem 1rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  width: 100%;
+  padding: 0;
+}
+
+.emptyStateInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: -12vh;
+}
+
+.emptyStateHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.emptyStateTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 0.5rem;
+}
+
+.emptyStateSubtitle {
+  font-size: 0.95rem;
+  color: #4b5563; /* gray-600 */
+  margin-bottom: 1rem;
+  text-align: center;
+  max-width: 28rem;
+}
+
+.promptList {
+  width: 100%;
+  max-width: 40rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  align-items: flex-start;
+}
+
+.promptLabel {
+  font-size: 0.95rem;
+  color: #000;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  text-align: left;
+}
+
+.messagesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.messagesEndRef {
+  height: 1px;
+}

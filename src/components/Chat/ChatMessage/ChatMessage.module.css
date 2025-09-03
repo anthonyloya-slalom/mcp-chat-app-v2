@@ -1,0 +1,84 @@
+.root {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.justifyEnd {
+  justify-content: flex-end;
+}
+
+.justifyStart {
+  justify-content: flex-start;
+}
+
+.maxWidthUser {
+  max-width: 70%;
+}
+
+.maxWidthAssistant {
+  max-width: 85%;
+  width: 100%;
+}
+
+.userBubble {
+  border-radius: 1rem; /* Less round */
+  background: #7c3aed; /* purple-600 */
+  color: #fff;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 10px 40px rgba(80, 0, 120, 0.15);
+}
+
+.userMarkdown {
+  /* prose prose-sm prose-invert max-w-none */
+  font-size: 0.95rem;
+  color: #fff;
+  max-width: none;
+  line-height: 1.6;
+}
+
+.assistantContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  color: #000;
+}
+
+.assistantBubble {
+  border-radius: 1rem; /* Less round */
+  background: rgba(255,255,255,0.10);
+  backdrop-filter: blur(8px);
+  color: #000;
+  border: 1px solid rgba(139, 92, 246, 0.2); /* purple-500/20 */
+  padding: 1rem 1.25rem;
+  box-shadow: 0 10px 40px rgba(80, 0, 120, 0.15);
+}
+
+.assistantMarkdown {
+  /* prose prose-sm max-w-none text-black */
+  font-size: 0.95rem;
+  color: #000;
+  max-width: none;
+  line-height: 1.6;
+}
+
+.queryDataSection {
+  margin-top: 1rem;
+  border-top: 1px solid #c4b5fd; /* purple-300 */
+  padding-top: 1rem;
+}
+
+.queryDataList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.queryDataItem {
+  font-size: 0.95rem;
+  color: #000;
+}
+
+.queryDataAddress {
+  color: #7c3aed; /* purple-700 */
+}

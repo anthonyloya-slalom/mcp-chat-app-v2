@@ -114,7 +114,6 @@ export function searchLeaveData(query: string): any {
     };
   }
   
-  // Default response
   return {
     totalEmployees: mockLeaveData.statistics.totalEmployeesOnLeave,
     leaveTypes: {

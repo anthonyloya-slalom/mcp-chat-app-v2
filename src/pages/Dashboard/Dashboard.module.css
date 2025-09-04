@@ -1,0 +1,25 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding: 2rem;
+}
+
+.statusRow {
+  display: flex;
+  flex-direction: row; /* Ensure horizontal row */
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns */
+  grid-template-rows: repeat(2, auto);   /* 2 rows */
+  gap: 2rem;
+  justify-items: stretch;
+  align-items: stretch;
+  width: 100%;
+}

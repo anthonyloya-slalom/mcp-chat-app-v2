@@ -1,7 +1,6 @@
 import * as React from "react"
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
 import styles from "./ScrollArea.module.css"
-import { cn } from "@/lib/utils"
 
 const ScrollArea = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.Root>,
@@ -9,7 +8,7 @@ const ScrollArea = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <ScrollAreaPrimitive.Root
     ref={ref}
-    className={cn(styles.root, className)}
+    className={styles.root}
     {...props}
   >
     <ScrollAreaPrimitive.Viewport className={styles.viewport}>
@@ -24,15 +23,11 @@ ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName
 const ScrollBar = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
   React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>
->(({ className, orientation = "vertical", ...props }, ref) => (
+>(({ orientation = "vertical", ...props }, ref) => (
   <ScrollAreaPrimitive.ScrollAreaScrollbar
     ref={ref}
     orientation={orientation}
-    className={cn(
-      styles.scrollbar,
-      orientation === "vertical" ? styles.vertical : styles.horizontal,
-      className
-    )}
+    className={`${styles.scrollbar} ${orientation === "vertical" ? styles.vertical : styles.horizontal}`}
     {...props}
   >
     <ScrollAreaPrimitive.ScrollAreaThumb className={styles.thumb} />

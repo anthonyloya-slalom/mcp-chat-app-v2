@@ -1,4 +1,5 @@
-import { ChatAnthropic } from '@langchain/anthropic';
+import { BedrockRuntime } from '@aws-sdk/client-bedrock-runtime';
+import AnthropicBedrock from '@anthropic-ai/bedrock-sdk';
 
 export type LLMProvider = 'claude';
 
@@ -8,10 +9,11 @@ export interface LLMConfig {
   modelName?: string;
   temperature?: number;
   maxTokens?: number;
+  region?: string;
 }
 
 export const DEFAULT_MODELS = {
-  claude: 'claude-3-opus-20240229',
+  claude: 'us.anthropic.claude-opus-4-1-20250805-v1:0',
 };
 
 export function createLLM(config: LLMConfig): any {
@@ -21,13 +23,24 @@ export function createLLM(config: LLMConfig): any {
     modelName,
     temperature = 0.7,
     maxTokens = 4000,
+    region = process.env.AWS_REGION,
   } = config;
 
   switch (provider) {
     case 'claude':
-      return new ChatAnthropic({
-        anthropicApiKey: apiKey || process.env.ANTHROPIC_API_KEY,
-        modelName: modelName || DEFAULT_MODELS.claude,
+      // Create AWS Bedrock client
+      const bedrockClient = new BedrockRuntime({
+        region: region,
+        credentials: {
+          accessKeyId: apiKey || process.env.AWS_ACCESS_KEY_ID || '',
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+        },
+      });
+
+      // Create AnthropicBedrock instance
+      return new AnthropicBedrock({
+        client: bedrockClient,
+        model: modelName || DEFAULT_MODELS.claude,
         temperature,
         maxTokens,
         streaming: true,
@@ -39,6 +52,5 @@ export function createLLM(config: LLMConfig): any {
 }
 
 export function getDefaultProvider(): LLMProvider {
-  // Always use Claude as the default provider
   return 'claude';
 }

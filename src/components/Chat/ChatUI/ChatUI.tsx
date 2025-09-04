@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 import { useConversationStore } from '../../../lib/store';
 import { Message } from '../../../lib/types';
-import { cn } from '../../../lib/utils';
 import { X as XIcon } from 'lucide-react';
 import PromptMessageButton from '../PromptMessageButton/PromptMessageButton';
 import MessageInputArea from '../MessageInputArea/MessageInputArea';
@@ -64,11 +63,9 @@ export default function ChatUI({ onClose }: ChatUIProps) {
     };
     addMessage(assistantMessage);
 
-    // Initialize execution steps
     const steps: ExecutionStep[] = [];
     setExecutionSteps(prev => new Map(prev).set(assistantId, steps));
 
-    // Check if user wants streaming (can add a toggle later)
     const useStreaming = true;
 
     if (useStreaming) {
@@ -182,7 +179,7 @@ export default function ChatUI({ onClose }: ChatUIProps) {
                       return new Map(prev).set(assistantId, newSteps);
                     });
                   }
-                  i++; // Skip the data line we just processed
+                  i++;
                 } catch (e) {
                   // ignore
                 }
@@ -319,9 +316,6 @@ export default function ChatUI({ onClose }: ChatUIProps) {
                   message={message}
                   isStreaming={isProcessing && index === messages.length - 1}
                   executionSteps={executionSteps.get(message.id)}
-                  onRetryStep={(stepIndex) => {
-                    // TODO: Implement retry logic based on your API
-                  }}
                 />
               ))}
               <div ref={messagesEndRef} className={styles.messagesEndRef} />

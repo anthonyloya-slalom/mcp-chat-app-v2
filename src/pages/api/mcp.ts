@@ -4,7 +4,6 @@ import { ChatAnthropic } from '@langchain/anthropic';
 const MCP_BASE_URL = 'https://b05c5855ce70.ngrok-free.app';
 const MCP_SSE_URL = `${MCP_BASE_URL}/sse`;
 
-// MCP session management
 let globalSessionId: string | null = null;
 let globalMessageUrl: string | null = null;
 
@@ -13,7 +12,6 @@ async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string
     return { sessionId: globalSessionId!, messageUrl: globalMessageUrl! };
   }
   
-  // GET the SSE endpoint to get session info
   const sseResponse = await fetch(MCP_SSE_URL, {
     method: 'GET',
     headers: {
@@ -42,7 +40,6 @@ async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string
     globalSessionId = `session-${Date.now()}`;
   }
   
-  // Initialize the session
   await fetch(globalMessageUrl, {
     method: 'POST',
     headers: {
@@ -60,7 +57,6 @@ async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string
     })
   });
   
-  // Send initialized notification
   await fetch(globalMessageUrl, {
     method: 'POST',
     headers: {
@@ -170,7 +166,6 @@ export default async function handler(
     const steps: any[] = [];
     let conversationHistory = '';
     
-    // System prompt for dynamic discovery - NO HARDCODING
     const systemPrompt = `You are a leave management assistant helping HR personnel manage employee leaves. You MUST use real tools to get real data.
 
 AVAILABLE TOOLS:
@@ -331,7 +326,6 @@ What is your next thought and action?`;
       console.log(responseText);
       console.log('--- CLAUDE RESPONSE END ---\n');
       
-      // Check for final answer
       if (responseText.includes('Final Answer:')) {
         console.log('\n=== FINAL ANSWER FOUND ===');
         const answer = responseText.split('Final Answer:')[1].trim();
@@ -346,11 +340,9 @@ What is your next thought and action?`;
         });
       }
       
-      // Parse action - handle multi-line format and empty objects
       const thoughtMatch = responseText.match(/Thought:\s*([^\n]+)/);
       const actionMatch = responseText.match(/Action:\s*(\w+)/);
-      // Handle Action Input - match JSON objects including multi-line SQL
-      // This regex looks for balanced braces to handle nested JSON properly
+
       let inputMatch = null;
       const actionInputIndex = responseText.indexOf('Action Input:');
       if (actionInputIndex !== -1) {
@@ -369,12 +361,11 @@ What is your next thought and action?`;
           }
           if (endIndex > 0) {
             const jsonStr = afterActionInput.substring(0, endIndex);
-            inputMatch = ['', jsonStr]; // Match format [full match, capture group]
+            inputMatch = ['', jsonStr]; 
           }
         }
       }
       
-      // Fallback to simple patterns if above doesn't work
       if (!inputMatch) {
         inputMatch = responseText.match(/Action Input:\s*({.*?})/) ||
                      responseText.match(/Action Input:\s*({})/);
@@ -389,12 +380,10 @@ What is your next thought and action?`;
       if (responseText.includes('Observation:')) {
         console.log('⚠️ WARNING: Claude is hallucinating observations! Correcting...');
         
-        // Extract only the valid part before the fake observation
         const validPart = responseText.split('Observation:')[0];
         const thoughtMatch2 = validPart.match(/Thought:\s*([^\n]+)/);
         const actionMatch2 = validPart.match(/Action:\s*(\w+)/);
         
-        // Use same balanced brace matching for hallucination case
         let inputMatch2 = null;
         const actionInputIndex2 = validPart.indexOf('Action Input:');
         if (actionInputIndex2 !== -1) {
@@ -421,7 +410,6 @@ What is your next thought and action?`;
         }
         
         if (actionMatch2 && inputMatch2) {
-          // Process the valid action before the hallucination
           const thought = thoughtMatch2?.[1] || 'Tilt AI is thinking...';
           const toolName = actionMatch2[1];
           let toolInput: any;
@@ -429,14 +417,12 @@ What is your next thought and action?`;
           try {
             let jsonStr = inputMatch2[1].trim();
             
-            // Handle multi-line SQL queries by escaping newlines
             if (jsonStr.includes('\n')) {
               jsonStr = jsonStr.replace(/\n/g, '\\n');
             }
             
             toolInput = JSON.parse(jsonStr);
             
-            // Fix parameter names
             if (toolName === 'get_tables' && toolInput.schema && !toolInput.schema_name) {
               toolInput.schema_name = toolInput.schema;
               delete toolInput.schema;
@@ -446,7 +432,6 @@ What is your next thought and action?`;
               delete toolInput.table;
             }
             
-            // Execute the real tool
             console.log(`\n>>> EXECUTING TOOL (from hallucinated response): ${toolName}`);
             console.log('Input:', JSON.stringify(toolInput, null, 2));
             
@@ -468,7 +453,6 @@ What is your next thought and action?`;
               observation: formattedResult
             });
             
-            // Add REAL observation to history
             conversationHistory += `
 Thought: ${thought}
 Action: ${toolName}
@@ -560,7 +544,6 @@ Observation: ${formattedResult.substring(0, 1000)}
           const result = await callMCPTool(toolName, toolInput);
           console.log(`Tool completed in ${Date.now() - startTime}ms`);
           
-          // Format result for display
           let formattedResult = '';
           if (result && result.content && result.content[0]?.text) {
             formattedResult = result.content[0].text;
@@ -573,7 +556,6 @@ Observation: ${formattedResult.substring(0, 1000)}
             console.log('Tool result (JSON):', formattedResult.substring(0, 300));
           }
           
-          // Add to steps for UI
           steps.push({
             action: {
               tool: toolName,
@@ -610,7 +592,6 @@ Observation: Error - ${error instanceof Error ? error.message : 'Unknown error'}
       }
     }
     
-    // If we hit max steps, ask for final answer
     const finalPrompt = `Based on the information gathered, please provide a Final Answer to the user's question: "${input}"
 
 ${conversationHistory}

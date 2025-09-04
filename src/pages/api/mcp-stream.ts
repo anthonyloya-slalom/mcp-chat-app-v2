@@ -6,7 +6,6 @@ import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedroc
 const MCP_BASE_URL = 'http://localhost:8000';
 const MCP_SSE_URL = `${MCP_BASE_URL}/sse`;
 
-// MCP session management
 let globalSessionId: string | null = null;
 let globalMessageUrl: string | null = null;
 
@@ -15,7 +14,6 @@ async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string
     return { sessionId: globalSessionId!, messageUrl: globalMessageUrl! };
   }
   
-  // GET the SSE endpoint to get session info
   const sseResponse = await fetch(MCP_SSE_URL, {
     method: 'GET',
     headers: {
@@ -43,7 +41,6 @@ async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string
     globalSessionId = `session-${Date.now()}`;
   }
   
-  // Initialize the session
   await fetch(globalMessageUrl, {
     method: 'POST',
     headers: {
@@ -61,7 +58,6 @@ async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string
     })
   });
   
-  // Send initialized notification
   await fetch(globalMessageUrl, {
     method: 'POST',
     headers: {
@@ -78,13 +74,11 @@ async function initMCPSession(): Promise<{ sessionId: string, messageUrl: string
 }
 
 async function callMCPTool(toolName: string, args: any): Promise<any> {
-  // Try to use the actual MCP server first
   const { sessionId, messageUrl } = await initMCPSession();
   
   console.log(`🔧 Calling MCP tool: ${toolName} with args:`, args);
   console.log(`📡 Using message URL: ${messageUrl}`);
   
-  // Add timeout to prevent hanging
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 30000); // 30 second timeout
   
@@ -115,7 +109,7 @@ async function callMCPTool(toolName: string, args: any): Promise<any> {
       }
       if (data.error) {
         console.error(`❌ MCP tool ${toolName} error:`, data.error);
-        // Return error as result instead of throwing to prevent infinite retries
+
         return {
           content: [{
             type: 'text',
@@ -140,7 +134,6 @@ async function callMCPTool(toolName: string, args: any): Promise<any> {
     console.error(`Failed to call MCP tool:`, fetchError);
   }
   
-  // Try to use mock data as fallback for leave-related queries
   console.warn(`⚠️ MCP unavailable, trying mock data for ${toolName}`);
   if (toolName.toLowerCase().includes('leave') || toolName.toLowerCase().includes('employee')) {
     const query = JSON.stringify(args);
@@ -153,7 +146,6 @@ async function callMCPTool(toolName: string, args: any): Promise<any> {
     };
   }
   
-  // Return empty result instead of throwing to prevent infinite retries
   return {
     content: [{
       type: 'text',
@@ -162,7 +154,6 @@ async function callMCPTool(toolName: string, args: any): Promise<any> {
   };
 }
 
-// Wrapper to handle both MCP and web tools
 async function callTool(toolName: string, args: any): Promise<any> {
   // Redirect snowflake_query to leave_data_query since MCP is not available
   if (toolName === 'snowflake_query') {

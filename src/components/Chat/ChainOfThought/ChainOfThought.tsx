@@ -56,7 +56,6 @@ export default function ChainOfThought({ steps, isStreaming }: ChainOfThoughtPro
 
   return (
     <div className={styles.container}>
-      {/* Header */}
       <div
         className={styles.header}
         onClick={() => setIsSectionExpanded(!isSectionExpanded)}

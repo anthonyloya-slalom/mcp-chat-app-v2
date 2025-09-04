@@ -14,19 +14,12 @@
 }
 
 .launcherButton {
-  position: fixed !important;
+  position: fixed;
   bottom: 1.5rem;
   right: 1.5rem;
   z-index: 50;
-  width: 64px !important;
-  height: 64px !important;
+  width: 64px;
+  height: 64px;
   transition: background 0.2s;
   border: none;
-}
-
-.avatar {
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 50% !important;
-  object-fit: cover;
 }

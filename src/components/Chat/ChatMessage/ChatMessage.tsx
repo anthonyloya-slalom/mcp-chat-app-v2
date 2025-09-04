@@ -19,14 +19,12 @@ interface ChatMessageProps {
   message: Message;
   isStreaming?: boolean;
   executionSteps?: ExecutionStep[];
-  onRetryStep?: (stepIndex: number) => void;
 }
 
 export default function ChatMessage({ 
   message, 
   isStreaming, 
-  executionSteps,
-  onRetryStep 
+  executionSteps
 }: ChatMessageProps) {
   const [queryData, setQueryData] = useState<any>(null);
 
@@ -147,7 +145,6 @@ export default function ChatMessage({
               <ChainOfThought 
                 steps={executionSteps} 
                 isStreaming={isStreaming}
-                onRetry={onRetryStep}
               />
             )}
             {message.content && (

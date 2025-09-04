@@ -40,7 +40,6 @@ async function initMCPSession(): Promise<string> {
   return sessionId;
 }
 
-// Test endpoint to directly query leave management data
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -48,11 +47,9 @@ export default async function handler(
   console.log('\n========== LEAVE DATA TEST STARTING ==========');
   
   try {
-    // Initialize session
     const sessionId = await initMCPSession();
     console.log('Session ID:', sessionId);
     
-    // Test 1: Query leaves data
     console.log('\nTest 1: query_leaves_data');
     const test1Response = await fetch(MCP_API_URL, {
       method: 'POST',
@@ -79,7 +76,6 @@ export default async function handler(
     const test1Text = await test1Response.text();
     console.log('Test 1 Response:', test1Text.substring(0, 1000));
     
-    // Test 2: Analyze caregiving leaves
     console.log('\nTest 2: analyze_caregiving_leaves');
     const test2Response = await fetch(MCP_API_URL, {
       method: 'POST',
@@ -102,7 +98,6 @@ export default async function handler(
     const test2Text = await test2Response.text();
     console.log('Test 2 Response:', test2Text.substring(0, 1000));
     
-    // Test 3: Get leave duration statistics
     console.log('\nTest 3: leave_duration_stats');
     const test3Response = await fetch(MCP_API_URL, {
       method: 'POST',
@@ -127,7 +122,6 @@ export default async function handler(
     const test3Text = await test3Response.text();
     console.log('Test 3 Response:', test3Text.substring(0, 1000));
     
-    // Parse responses to check for leave data
     const results = {
       test1: { 
         hasLeaveData: test1Text.includes('leave') || test1Text.includes('caregiving'),

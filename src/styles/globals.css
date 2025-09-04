@@ -45,7 +45,6 @@
   --ring: #090909;
 }
 
-/* Base styles */
 * {
   box-sizing: border-box;
   border-color: var(--border);
@@ -67,7 +66,6 @@ html, body {
   height: 100%;
 }
 
-/* Custom scrollbar styles */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -86,7 +84,6 @@ html, body {
   background: #6b7280;
 }
 
-/* Markdown content styling */
 .prose pre {
   background: #18181b;
   color: #f3f4f6;
@@ -109,7 +106,6 @@ html, body {
   padding: 0;
 }
 
-/* SQL syntax highlighting */
 .sql-keyword {
   color: #2563eb;
   font-weight: 600;
@@ -131,7 +127,6 @@ html, body {
   color: #ef4444;
 }
 
-/* Animation classes */
 @keyframes slide-up {
   from {
     transform: translateY(10px);
@@ -147,7 +142,6 @@ html, body {
   animation: slide-up 0.3s ease-out;
 }
 
-/* Enhanced animations */
 .animation-delay-200 {
   animation-delay: 200ms;
 }
@@ -156,7 +150,6 @@ html, body {
   animation-delay: 400ms;
 }
 
-/* Gradient text */
 .gradient-text {
   background: linear-gradient(to right, #3B82F6, #8B5CF6);
   -webkit-background-clip: text;
@@ -164,7 +157,6 @@ html, body {
   background-clip: text;
 }
 
-/* Glass morphism effect */
 .glass {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
@@ -172,7 +164,6 @@ html, body {
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Custom scrollbar for chat */
 .chat-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
@@ -190,7 +181,6 @@ html, body {
   background: #94A3B8;
 }
 
-/* Line clamp utilities */
 .line-clamp-2 {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -198,7 +188,6 @@ html, body {
   overflow: hidden;
 }
 
-/* Loading dots animation */
 @keyframes bounce {
   0%, 80%, 100% {
     transform: scale(0);
@@ -212,7 +201,6 @@ html, body {
   animation: bounce 1.4s infinite ease-in-out both;
 }
 
-/* Smooth height transitions for collapsibles */
 @keyframes slideDown {
   from {
     opacity: 0;
@@ -241,7 +229,6 @@ html, body {
   animation: fadeIn 0.3s ease-out;
 }
 
-/* Responsive adjustments */
 @media (max-width: 640px) {
   .prose {
     font-size: 0.875rem;

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ChatAnthropic } from '@langchain/anthropic';
+import { callClaudeBedrock } from '../../lib/llm-provider';
 
 const MCP_BASE_URL = 'https://b05c5855ce70.ngrok-free.app';
 const MCP_SSE_URL = `${MCP_BASE_URL}/sse`;
@@ -145,7 +145,7 @@ export default async function handler(
   }, 60000); // 60 second timeout to prevent hanging
 
   try {
-    const { input } = req.body;
+    const { input, provider = 'claude' } = req.body;
     
     if (!input) {
       clearTimeout(timeout);
@@ -156,12 +156,6 @@ export default async function handler(
     console.log('User Query:', input);
     console.log('Time:', new Date().toISOString());
     
-    const claude = new ChatAnthropic({
-      apiKey: process.env.ANTHROPIC_API_KEY,
-      modelName: 'claude-3-opus-20240229', // Use Opus for better instruction following
-      temperature: 0,
-      maxTokens: 2000,
-    });
     
     const steps: any[] = [];
     let conversationHistory = '';
@@ -319,8 +313,11 @@ What is your next thought and action?`;
       console.log(`\n=== Step ${i + 1} ===`);
       console.log('Sending prompt to Claude...');
       
-      const response = await claude.invoke(prompt);
-      const responseText = response.content.toString();
+      const responseText = await callClaudeBedrock(prompt, {
+        temperature: 0,
+        maxTokens: 2000,
+        region: 'us-east-2'
+      });
       
       console.log('\n--- CLAUDE RESPONSE START ---');
       console.log(responseText);
@@ -598,8 +595,11 @@ ${conversationHistory}
 
 Final Answer:`;
 
-    const finalResponse = await claude.invoke(finalPrompt);
-    const finalAnswer = finalResponse.content.toString();
+    const finalAnswer = await callClaudeBedrock(finalPrompt, {
+      temperature: 0,
+      maxTokens: 2000,
+      region: 'us-east-2'
+    });
     
     clearTimeout(timeout);
     return res.status(200).json({

@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ChatAnthropic } from '@langchain/anthropic';
 import { searchLeaveData } from '../../lib/mock-leave-data';
-import { BedrockRuntimeClient, InvokeModelCommand } from "@aws-sdk/client-bedrock-runtime";
+import { callClaudeBedrock } from '../../lib/llm-provider';
 
 const MCP_BASE_URL = 'http://localhost:8000';
 const MCP_SSE_URL = `${MCP_BASE_URL}/sse`;
@@ -187,45 +186,6 @@ async function callTool(toolName: string, args: any): Promise<any> {
   return callMCPTool(toolName, args);
 }
 
-// Helper to call Claude via Bedrock
-async function callClaudeBedrock(prompt: string): Promise<string> {
-  const client = new BedrockRuntimeClient({ region: "us-east-2" }); // Ohio region
-
-  // Use the cross-region inference profile for Claude Opus 4.1
-  // This uses the inference profile which is required for Opus model
-  const modelId = "us.anthropic.claude-opus-4-1-20250805-v1:0";
-
-  // Claude 3 models use the Messages API format
-  const body = JSON.stringify({
-    anthropic_version: "bedrock-2023-05-31",
-    max_tokens: 2000,
-    temperature: 0,
-    messages: [
-      {
-        role: "user",
-        content: prompt
-      }
-    ]
-  });
-
-  const command = new InvokeModelCommand({
-    modelId,
-    contentType: "application/json",
-    accept: "application/json",
-    body,
-  });
-
-  const response = await client.send(command);
-  const responseBody = JSON.parse(new TextDecoder().decode(response.body));
-  
-  // Claude 3 response format
-  if (responseBody.content && Array.isArray(responseBody.content)) {
-    return responseBody.content[0]?.text || "";
-  }
-  
-  // Fallback for other response formats
-  return responseBody.completion || responseBody.result || "";
-}
 
 export default async function handler(
   req: NextApiRequest,
@@ -263,7 +223,7 @@ export default async function handler(
   };
 
   try {
-    const { input, conversationHistory: previousMessages = [] } = req.body;
+    const { input, conversationHistory: previousMessages = [], provider = 'claude' } = req.body;
     
     if (!input) {
       sendEvent('error', { message: 'Missing input' });
@@ -335,8 +295,12 @@ ${conversationHistory}
 
 What is your next thought and action? Remember to keep Action Input JSON on a single line.`;
 
-      // 👇 Use Bedrock Claude here
-      const responseText = await callClaudeBedrock(prompt);
+      // Use Bedrock Claude via llm-provider
+      const responseText = await callClaudeBedrock(prompt, {
+        temperature: 0,
+        maxTokens: 2000,
+        region: 'us-east-2'
+      });
 
       // Check for final answer
       const finalAnswerMatch = responseText.match(/^Final Answer:\s*(.+)$/m);
@@ -486,7 +450,11 @@ Provide a clear, data-driven answer based on the tool results above.
 
 Final Answer:`;
 
-      const finalAnswer = await callClaudeBedrock(finalPrompt);
+      const finalAnswer = await callClaudeBedrock(finalPrompt, {
+        temperature: 0,
+        maxTokens: 2000,
+        region: 'us-east-2'
+      });
       
       sendEvent('final', {
         answer: finalAnswer,

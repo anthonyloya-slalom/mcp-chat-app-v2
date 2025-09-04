@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import styles from './ChainOfThought.module.css';
 
 interface ExecutionStep {
@@ -59,8 +60,16 @@ export default function ChainOfThought({ steps, isStreaming }: ChainOfThoughtPro
       <div
         className={styles.header}
         onClick={() => setIsSectionExpanded(!isSectionExpanded)}
+        style={{ cursor: 'pointer' }}
       >
         <div className={styles.headerContent}>
+          <span className={styles.headerIcon}>
+            {isSectionExpanded ? (
+              <ChevronDown width={16} height={16} />
+            ) : (
+              <ChevronRight width={16} height={16} />
+            )}
+          </span>
           <div className={styles.headerTitle}>
             View processing steps ({totalSteps})
           </div>
@@ -80,7 +89,6 @@ export default function ChainOfThought({ steps, isStreaming }: ChainOfThoughtPro
         </div>
       )}
 
-      {/* Loading indicator */}
       {isSectionExpanded && isStreaming && steps.length === 0 && (
         <div className={styles.loadingRow}>
           <span className={styles.loadingIcon}>○</span>

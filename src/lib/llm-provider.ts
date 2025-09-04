@@ -23,22 +23,16 @@ export function createLLM(config: LLMConfig): AnthropicBedrock {
     awsAccessKey,
     awsSecretKey,
     awsSessionToken,
-    modelName,
-    temperature = 0.7,
-    maxTokens = 4000,
-    region = process.env.AWS_REGION || 'us-east-1',
+    region = process.env.AWS_REGION,
   } = config;
 
   switch (provider) {
     case 'claude':
-      // Create AnthropicBedrock client directly with credentials
       return new AnthropicBedrock({
-        // AWS credentials - will use default providers if not specified
         awsAccessKey: awsAccessKey || process.env.AWS_ACCESS_KEY_ID,
         awsSecretKey: awsSecretKey || process.env.AWS_SECRET_ACCESS_KEY,
         awsSessionToken: awsSessionToken || process.env.AWS_SESSION_TOKEN,
         
-        // AWS region
         awsRegion: region,
       });
 
@@ -65,7 +59,6 @@ export async function callClaudeBedrock(prompt: string, config?: Partial<LLMConf
     ],
   });
 
-  // Extract text from response
   if (response.content && response.content.length > 0) {
     const content = response.content[0];
     if ('text' in content) {

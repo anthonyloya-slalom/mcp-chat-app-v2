@@ -46,13 +46,14 @@ export default function Chart({
         label: d.name ?? d[barXAxisKey] ?? "",
         color: colors[i % colors.length],
       })),
-      innerRadius: type === "donut" ? 40 : 0,
-      outerRadius: 80,
+      innerRadius: type === "donut" ? 60 : 0,   // Increased inner radius for donut
+      outerRadius: 120,                         // Increased outer radius for bigger pie
       paddingAngle: 2,
       cornerRadius: 4,
-      valueLabel: "value" as string, // Show value inside slice
-      valueLabelPlacement: "center" as const, // Place value inside
-      valueLabelStyle: { fontWeight: 700, fontSize: 16 },
+      valueLabel: "label",
+      valueLabelPlacement: "center" as const,
+      valueLabelDisplay: "inside",
+      valueLabelStyle: { fontWeight: 700, fontSize: 16, fill: "#fff" },
     },
   ];
 
@@ -82,8 +83,8 @@ export default function Chart({
       {type === "pie" || type === "donut" ? (
         <PieChart
           series={pieSeries}
-          width={typeof width === "number" ? width : 400}
-          height={typeof height === "number" ? height : 300}
+          width={typeof width === "number" ? width : 440}
+          height={typeof height === "number" ? height : 340}
         />
       ) : (
         <BarChart
@@ -97,7 +98,7 @@ export default function Chart({
               position: { vertical: 'bottom', horizontal: 'center' },
             },
           }}
-          margin={{ top: 20, right: 20, bottom: 80, left: 40 }}
+          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
         />
       )}
     </Box>

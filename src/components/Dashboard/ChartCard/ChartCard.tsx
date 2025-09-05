@@ -1,8 +1,13 @@
 import React from "react";
+import dynamic from "next/dynamic";
 import { IconButton, Typography } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
-import Chart from "../Chart/Chart";
 import styles from "./ChartCard.module.css";
+
+const Chart = dynamic(() => import("../Chart/Chart"), {
+  ssr: false,
+  loading: () => <div style={{ height: 300, display: "flex", alignItems: "center", justifyContent: "center" }}>Loading chart...</div>
+});
 
 interface ChartCardProps {
   title: string;

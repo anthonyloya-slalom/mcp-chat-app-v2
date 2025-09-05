@@ -86,12 +86,6 @@ export default function Dashboard() {
 				/>
 				<ChartCard
 					title="Leave by Stage"
-					count={
-						leaveByStage.approved_hr.employees +
-						leaveByStage.approved_employee.employees +
-						leaveByStage.rejected_hr.employees +
-						leaveByStage.sent_to_employee.employees
-					}
 					chartType="bar"
 					chartData={barChartData}
 					chartColors={["#22c55e", "#60a5fa", "#f87171", "#fbbf24"]}

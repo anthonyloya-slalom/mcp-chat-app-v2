@@ -11,7 +11,7 @@ const Chart = dynamic(() => import("../Chart/Chart"), {
 
 interface ChartCardProps {
   title: string;
-  count: number;
+  count?: number;
   chartType: "pie" | "donut" | "bar";
   chartData: any[];
   chartColors?: string[];
@@ -45,9 +45,11 @@ export default function ChartCard({
           <DownloadIcon />
         </IconButton>
       </div>
-      <Typography variant="h3" className={styles.count}>
-        {count}
-      </Typography>
+      {count && (
+        <Typography variant="h3" className={styles.count}>
+          {count}
+        </Typography>
+      )}
       <div className={styles.chartArea}>
         <Chart
           type={chartType}

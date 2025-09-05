@@ -5,6 +5,7 @@ import {
   PieChartProps,
   BarChart,
   BarChartProps,
+  ChartsColorPalette,
 } from "@mui/x-charts";
 
 type ChartType = "pie" | "donut" | "bar";
@@ -55,17 +56,19 @@ export default function Chart({
     },
   ];
 
-  const barSeries = [
-    {
-      data: data.map((d) => d[barDataKey]),
-      label: barDataKey,
-      color: colors[0],
-    },
-  ];
+  // Create individual series for each bar to enable different colors
+  const barSeries = data.map((item, index) => ({
+    data: data.map((d, i) => i === index ? d[barDataKey] : null),
+    label: item[barXAxisKey],
+    color: colors[index % colors.length],
+    valueFormatter: (value: number | null) => value ? value.toString() : '',
+  }));
+  
   const barXAxis = [
     {
-      data: data.map((d) => d[barXAxisKey]),
-      scaleType: "band",
+      data: data.map(() => ''), // Empty labels for x-axis
+      scaleType: "band" as const,
+      tickLabelStyle: { fontSize: 0 }, // Hide tick labels
     },
   ];
 
@@ -88,6 +91,13 @@ export default function Chart({
           xAxis={barXAxis}
           width={typeof width === "number" ? width : 300}
           height={typeof height === "number" ? height : 220}
+          slotProps={{
+            legend: {
+              direction: 'horizontal',
+              position: { vertical: 'bottom', horizontal: 'center' },
+            },
+          }}
+          margin={{ top: 20, right: 20, bottom: 80, left: 40 }}
         />
       )}
     </Box>

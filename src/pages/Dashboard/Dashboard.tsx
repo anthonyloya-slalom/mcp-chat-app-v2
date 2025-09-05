@@ -40,41 +40,10 @@ const chartData4 = [
 
 const leaveByStage = mockChartData.data[0].leave_by_stage_chart;
 const barChartData = [
-  {
-    stage: "Approved by HR",
-    "Approved by HR": leaveByStage.approved_hr.employees,
-    "Approved by Employee": 0,
-    "Rejected by HR": 0,
-    "Sent to Employee": 0,
-  },
-  {
-    stage: "Approved by Employee",
-    "Approved by HR": 0,
-    "Approved by Employee": leaveByStage.approved_employee.employees,
-    "Rejected by HR": 0,
-    "Sent to Employee": 0,
-  },
-  {
-    stage: "Rejected by HR",
-    "Approved by HR": 0,
-    "Approved by Employee": 0,
-    "Rejected by HR": leaveByStage.rejected_hr.employees,
-    "Sent to Employee": 0,
-  },
-  {
-    stage: "Sent to Employee",
-    "Approved by HR": 0,
-    "Approved by Employee": 0,
-    "Rejected by HR": 0,
-    "Sent to Employee": leaveByStage.sent_to_employee.employees,
-  },
-];
-
-const barSeries = [
-  { dataKey: "Approved by HR", label: "Approved by HR", color: "#6c4bb6" },
-  { dataKey: "Approved by Employee", label: "Approved by Employee", color: "#22c55e" },
-  { dataKey: "Rejected by HR", label: "Rejected by HR", color: "#f87171" },
-  { dataKey: "Sent to Employee", label: "Sent to Employee", color: "#fbbf24" },
+  { name: "Approved by HR", value: leaveByStage.approved_hr.employees },
+  { name: "Approved by Employee", value: leaveByStage.approved_employee.employees },
+  { name: "Rejected by HR", value: leaveByStage.rejected_hr.employees },
+  { name: "Sent to Employee", value: leaveByStage.sent_to_employee.employees },
 ];
 
 export default function Dashboard() {
@@ -125,10 +94,9 @@ export default function Dashboard() {
 					}
 					chartType="bar"
 					chartData={barChartData}
-					barSeries={barSeries}
-					barXAxisKey="stage"
-					yAxisLabel="Number of Employees"
-					legendPosition="bottom"
+					chartColors={["#22c55e", "#60a5fa", "#f87171", "#fbbf24"]}
+					barDataKey="value"
+					barXAxisKey="name"
 				/>
 				<ChartCard
 					title="Leave Count by State"

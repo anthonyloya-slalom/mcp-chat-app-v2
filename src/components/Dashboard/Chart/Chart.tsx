@@ -19,6 +19,7 @@ interface ChartProps {
   pieDataKey?: string;
   barDataKey?: string;
   barXAxisKey?: string;
+  barYAxisKey?: string;
 }
 
 const DEFAULT_COLORS = ["#7c3aed", "#e67c30", "#3b7c8c", "#6c4bb6", "#22c55e", "#ef4444"];
@@ -33,8 +34,9 @@ export default function Chart({
   pieDataKey = "value",
   barDataKey = "value",
   barXAxisKey = "name",
+  barYAxisKey = "name",
 }: ChartProps) {
-  // Prepare data for MUI X Charts
+
   const pieSeries = [
     {
       data: data.map((d, i) => ({
@@ -47,6 +49,9 @@ export default function Chart({
       outerRadius: 80,
       paddingAngle: 2,
       cornerRadius: 4,
+      valueLabel: "value" as string, // Show value inside slice
+      valueLabelPlacement: "center" as const, // Place value inside
+      valueLabelStyle: { fontWeight: 700, fontSize: 16 },
     },
   ];
 
@@ -74,8 +79,8 @@ export default function Chart({
       {type === "pie" || type === "donut" ? (
         <PieChart
           series={pieSeries}
-          width={typeof width === "number" ? width : 300}
-          height={typeof height === "number" ? height : 220}
+          width={typeof width === "number" ? width : 400}
+          height={typeof height === "number" ? height : 300}
         />
       ) : (
         <BarChart

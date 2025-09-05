@@ -53,7 +53,8 @@ export default function Chart({
       valueLabel: "label",
       valueLabelPlacement: "center" as const,
       valueLabelDisplay: "inside",
-      valueLabelStyle: { fontWeight: 700, fontSize: 16, fill: "#fff" },
+      valueLabelStyle: { fontWeight: 700, fontSize: 16, color: "white" },
+      arcLabel: (params) => params.value ?? '',
     },
   ];
 
@@ -69,7 +70,6 @@ export default function Chart({
     {
       data: data.map(() => ''), // Empty labels for x-axis
       scaleType: "band" as const,
-      tickLabelStyle: { fontSize: 0 }, // Hide tick labels
     },
   ];
 

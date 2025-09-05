@@ -8,7 +8,7 @@
   width: 550px;
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1rem;
 }
 
 .header {
@@ -40,7 +40,7 @@
 
 .chartArea {
   width: 100%;
-  height: 340px; /* Increased height for bigger chart */
+  height: 360px; /* Increased height for bigger chart */
   display: flex;
   justify-content: center;
   align-items: center;

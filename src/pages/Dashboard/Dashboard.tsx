@@ -46,6 +46,15 @@ const barChartData = [
   { name: "Sent to Employee", value: leaveByStage.sent_to_employee.employees },
 ];
 
+// Prepare chart data for Continuous vs. Intermittent Leaves
+const continuousVsIntermittent = mockChartData.data[0].quick_answers_for_charts.continuous_vs_intermittent;
+
+const continuousVsIntermittentChartData = [
+  { name: "Continuous", value: continuousVsIntermittent.continuous},
+  { name: "Intermittent", value: continuousVsIntermittent.intermittent},
+  { name: "Unknown", value: continuousVsIntermittent.unknown},
+];
+
 export default function Dashboard() {
 	return (
 		<div className={styles.dashboard}>
@@ -102,12 +111,18 @@ export default function Dashboard() {
 				/>
 				<ChartCard
 					title="Continuous vs. Intermittent Leaves"
-					count={9}
+					count={
+						continuousVsIntermittent.continuous +
+						continuousVsIntermittent.intermittent +
+						continuousVsIntermittent.unknown
+					}
 					chartType="bar"
-					chartData={chartData4}
-					chartColors={["#e67c30", "#f87171", "#3b7c8c"]}
+					chartData={continuousVsIntermittentChartData}
+					chartColors={["#60a5fa", "#fbbf24", "#a3a3a3"]}
 					barDataKey="value"
 					barXAxisKey="name"
+					yAxisLabel="Number of Employees"
+					legendPosition="bottom"
 				/>
 			</div>
 		</div>

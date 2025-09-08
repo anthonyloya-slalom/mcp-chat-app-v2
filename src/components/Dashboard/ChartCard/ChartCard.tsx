@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { IconButton, Typography } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import styles from "./ChartCard.module.css";
+import { CountSummary } from "../CountSummary/CountSummary";
 
 const Chart = dynamic(() => import("../Chart/Chart"), {
   ssr: false,
@@ -11,7 +12,7 @@ const Chart = dynamic(() => import("../Chart/Chart"), {
 
 interface ChartCardProps {
   title: string;
-  count?: number;
+  countSummary?: any[];
   chartType: "pie" | "donut" | "bar";
   chartData: any[];
   chartColors?: string[];
@@ -23,7 +24,7 @@ interface ChartCardProps {
 
 export default function ChartCard({
   title,
-  count,
+  countSummary,
   chartType,
   chartData,
   chartColors,
@@ -47,9 +48,13 @@ export default function ChartCard({
           <DownloadIcon />
         </IconButton>
       </div>
-      {count && (
+      {Array.isArray(countSummary) ? (
         <Typography variant="h3" className={styles.count}>
-          {count}
+          <CountSummary items={countSummary} />
+        </Typography>
+      ) : countSummary && (
+        <Typography variant="h3" className={styles.count}>
+          {countSummary}
         </Typography>
       )}
       <div className={styles.chartArea}>

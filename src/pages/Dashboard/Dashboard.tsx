@@ -32,12 +32,6 @@ const donutChartData = Object.entries(activeByLeaveType).map(([type, obj]) => ({
   value: obj.employees,
 }));
 
-const chartData4 = [
-	{ name: "HR", value: 4 },
-	{ name: "Employee", value: 3 },
-	{ name: "Tilt", value: 2 },
-];
-
 const leaveByStage = mockChartData.data[0].leave_by_stage_chart;
 const barChartData = [
   { name: "Approved by HR", value: leaveByStage.approved_hr.employees },
@@ -46,14 +40,11 @@ const barChartData = [
   { name: "Sent to Employee", value: leaveByStage.sent_to_employee.employees },
 ];
 
-// Prepare chart data for Continuous vs. Intermittent Leaves
-const continuousVsIntermittent = mockChartData.data[0].quick_answers_for_charts.continuous_vs_intermittent;
+const continuousSummary = mockChartData.data[0].continuous_vs_intermittent_chart.summary;
 
-const continuousVsIntermittentChartData = [
-  { name: "Continuous", value: continuousVsIntermittent.continuous},
-  { name: "Intermittent", value: continuousVsIntermittent.intermittent},
-  { name: "Unknown", value: continuousVsIntermittent.unknown},
-];
+const continuousCount = continuousSummary.continuous.total_employees;
+const intermittentCount = continuousSummary.intermittent.total_employees;
+const unknownCount = continuousSummary.unknown.total_employees;
 
 export default function Dashboard() {
 	return (
@@ -87,7 +78,7 @@ export default function Dashboard() {
 			<div className={styles.chartsGrid}>
 				<ChartCard
 					title="Total Leaves"
-					count={mockChartData.data[0].active_leaves.employees_currently_on_leave}
+					countSummary={mockChartData.data[0].active_leaves.employees_currently_on_leave}
 					chartType="donut"
 					chartData={donutChartData}
 					chartColors={["#7c3aed", "#e67c30", "#3b7c8c", "#fbbf24", "#22c55e"]}
@@ -104,7 +95,7 @@ export default function Dashboard() {
 				/>
 				<ChartCard
 					title="Leave Count by State"
-					count={mockChartData.data[0].overall_dataset_statistics.unique_employees}
+					countSummary={mockChartData.data[0].overall_dataset_statistics.unique_employees}
 					chartType="pie"
 					chartData={chartDataByState}
 					chartColors={["#6c4bb6", "#60a5fa", "#f87171", "#fbbf24", "#22c55e", "#a3a3a3"]}
@@ -112,18 +103,21 @@ export default function Dashboard() {
 				/>
 				<ChartCard
 					title="Continuous vs. Intermittent Leaves"
-					count={
-						continuousVsIntermittent.continuous +
-						continuousVsIntermittent.intermittent +
-						continuousVsIntermittent.unknown
-					}
 					chartType="bar"
-					chartData={continuousVsIntermittentChartData}
+					countSummary={[
+						{ label: "Continuous", value: continuousCount },
+						{ label: "Intermittent", value: intermittentCount },
+						{ label: "Unknown", value: unknownCount },
+					]}
+					chartData={[
+						{ name: "Continuous", value: continuousCount },
+						{ name: "Intermittent", value: intermittentCount },
+						{ name: "Unknown", value: unknownCount },
+					]}
 					chartColors={["#60a5fa", "#fbbf24", "#a3a3a3"]}
 					barDataKey="value"
 					barXAxisKey="name"
-					yAxisLabel="Number of Leaves"
-					legendPosition="bottom"
+					yAxisLabel="Number of Employees"
 				/>
 			</div>
 		</div>

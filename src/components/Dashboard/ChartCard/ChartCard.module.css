@@ -35,12 +35,12 @@
   font-size: 2.5rem !important;
   font-weight: 700 !important;
   color: #232323;
-  margin-bottom: 0.5rem !important;
+  margin-bottom: 0.25rem !important;
 }
 
 .chartArea {
   width: 100%;
-  height: 360px; /* Increased height for bigger chart */
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

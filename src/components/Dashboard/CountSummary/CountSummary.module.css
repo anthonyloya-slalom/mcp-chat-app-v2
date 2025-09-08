@@ -1,0 +1,34 @@
+.countSummaryRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  font-family: inherit;
+  color: #3a2d2d;
+  font-weight: 500;
+  font-size: 1.1rem;
+  width: 100%;
+}
+
+.countSummaryDivider {
+  width: 1px;
+  height: 30px;
+  background: #d1d5db;
+  display: inline-block;
+}
+
+.countSummaryItem {
+  display: flex;
+  align-items: baseline;
+}
+
+.countSummaryValue {
+  font-weight: 700;
+  font-size: 2rem;
+  margin-right: 4px;
+}
+
+.countSummaryLabel {
+  font-weight: 500;
+  font-size: 0.95rem;
+}

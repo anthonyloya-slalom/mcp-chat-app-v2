@@ -7,6 +7,7 @@ import {
   BarChartProps,
   ChartsColorPalette,
 } from "@mui/x-charts";
+import styles from "./Chart.module.css";
 
 type ChartType = "pie" | "donut" | "bar";
 
@@ -74,34 +75,35 @@ export default function Chart({
   ];
 
   return (
-    <Box sx={{ width, height, background: "#fff", borderRadius: 2, boxShadow: 1, p: 2 }}>
-      {title && (
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          {title}
-        </Typography>
-      )}
-      {type === "pie" || type === "donut" ? (
-        <PieChart
-          series={pieSeries}
-          width={typeof width === "number" ? width : 440}
-          height={typeof height === "number" ? height : 340}
-        />
-      ) : (
-        <BarChart
-          series={barSeries}
-          xAxis={barXAxis}
-          yAxis={[{ label: yAxisLabel }]}
-          width={typeof width === "number" ? width : 300}
-          height={typeof height === "number" ? height : 220}
-          slotProps={{
-            legend: {
-              direction: 'horizontal',
-              position: { vertical: 'bottom', horizontal: 'center' },
-            },
-          }}
-          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-        />
-      )}
-    </Box>
+    <div className={styles.chartContainer}>
+      {title && <div className={styles.chartTitle}>{title}</div>}
+      <div className={styles.chartArea}>
+        {type === "pie" || type === "donut" ? (
+          <PieChart
+            series={pieSeries}
+            width={typeof width === "number" ? width : 440}
+            height={typeof height === "number" ? height : 340}
+          />
+        ) : (
+          <BarChart
+            series={barSeries}
+            xAxis={barXAxis}
+            yAxis={[{ label: yAxisLabel }]}
+            width={typeof width === "number" ? width : 300}
+            height={typeof height === "number" ? height : 220}
+            slotProps={{
+              legend: {
+                direction: 'horizontal',
+                position: { vertical: 'bottom', horizontal: 'center' },
+              },
+            }}
+            margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+          />
+        )}
+      </div>
+      <div className={styles.chartLegend}>
+        {/* Legend goes here */}
+      </div>
+    </div>
   );
 }

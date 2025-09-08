@@ -1,4 +1,5 @@
 import React from "react";
+import { colors } from "@/components/constants/colors";
 import {
   PieChart,
   BarChart,
@@ -10,7 +11,6 @@ type ChartType = "pie" | "donut" | "bar";
 interface ChartProps {
   type: ChartType;
   data: any[];
-  colors?: string[];
   width?: number | string;
   height?: number | string;
   title?: string;
@@ -20,12 +20,9 @@ interface ChartProps {
   yAxisLabel?: string;
 }
 
-const DEFAULT_COLORS = ["#7c3aed", "#e67c30", "#3b7c8c", "#6c4bb6", "#22c55e", "#ef4444"];
-
 export default function Chart({
   type,
   data,
-  colors = DEFAULT_COLORS,
   width = "100%",
   height = 300,
   title,
@@ -43,8 +40,8 @@ export default function Chart({
         label: d.name ?? d[barXAxisKey] ?? "",
         color: colors[i % colors.length],
       })),
-      innerRadius: type === "donut" ? 60 : 0,   // Increased inner radius for donut
-      outerRadius: 120,                         // Increased outer radius for bigger pie
+      innerRadius: type === "donut" ? 60 : 0,
+      outerRadius: 120,
       paddingAngle: 2,
       cornerRadius: 4,
       valueLabel: "label",
@@ -55,14 +52,13 @@ export default function Chart({
     },
   ];
 
-  // Create individual series for each bar to enable different colors
   const barSeries = data.map((item, index) => ({
     data: data.map((d, i) => i === index ? d[barDataKey] : null),
     label: item[barXAxisKey],
     color: colors[index % colors.length],
     valueFormatter: (value: number | null) => value ? value.toString() : '',
   }));
-  
+
   const barXAxis = [
     {
       data: data.map(() => ''),

@@ -82,14 +82,12 @@ export default function Dashboard() {
                     countSummary={mockChartData.data[0].active_leaves.employees_currently_on_leave}
                     chartType="donut"
                     chartData={donutChartData}
-                    chartColors={["#7c3aed", "#e67c30", "#3b7c8c", "#fbbf24", "#22c55e"]}
                     pieDataKey="value"
                 />
                 <ChartCard
                     title="Leave by Stage"
                     chartType="bar"
                     chartData={barChartData}
-                    chartColors={["#22c55e", "#60a5fa", "#f87171", "#fbbf24"]}
                     barDataKey="value"
                     barXAxisKey="name"
                     yAxisLabel="Number of Employees"
@@ -99,7 +97,6 @@ export default function Dashboard() {
                     countSummary={mockChartData.data[0].overall_dataset_statistics.unique_employees}
                     chartType="pie"
                     chartData={chartDataByState}
-                    chartColors={["#6c4bb6", "#60a5fa", "#f87171", "#fbbf24", "#22c55e", "#a3a3a3"]}
                     pieDataKey="value"
                 />
                 <ChartCard
@@ -115,7 +112,6 @@ export default function Dashboard() {
                         { name: "Intermittent", value: intermittentCount },
                         { name: "Unknown", value: unknownCount },
                     ]}
-                    chartColors={["#60a5fa", "#fbbf24", "#a3a3a3"]}
                     barDataKey="value"
                     barXAxisKey="name"
                     yAxisLabel="Number of Employees"

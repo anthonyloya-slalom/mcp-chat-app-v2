@@ -16,7 +16,6 @@ interface ChartCardProps {
   countSummary?: any[];
   chartType: "pie" | "donut" | "bar";
   chartData: any[];
-  chartColors?: string[];
   pieDataKey?: string;
   barDataKey?: string;
   barXAxisKey?: string;
@@ -29,7 +28,6 @@ export default function ChartCard({
   countSummary,
   chartType,
   chartData,
-  chartColors,
   pieDataKey,
   barDataKey,
   barXAxisKey,
@@ -47,11 +45,9 @@ export default function ChartCard({
       value: item.value,
       percent: total ? ((item.value / total) * 100).toFixed(1) : "0.0"
     }));
-    const colors = chartColors || ["#22c55e", "#60a5fa", "#f87171", "#fbbf24"];
     summaryNode = (
       <ChartPercentageSummary
         items={percentages}
-        colors={colors}
       />
     );
   }
@@ -79,7 +75,6 @@ export default function ChartCard({
         <Chart
           type={chartType}
           data={chartData}
-          colors={chartColors}
           pieDataKey={pieDataKey}
           barDataKey={barDataKey}
           barXAxisKey={barXAxisKey}

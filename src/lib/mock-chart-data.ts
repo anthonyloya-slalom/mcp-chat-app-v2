@@ -66,24 +66,24 @@ export const mockChartData = {
                 },
                 "continuous_vs_intermittent_chart": {
                     "summary": {
-                    "continuous": {
-                        "total_records": 54656,
-                        "total_leave_plans": 1040,
+                        "continuous": {
                         "total_employees": 849,
+                        "total_plans": 1040,
+                        "total_records": 54656,
                         "percentage": 56.68
-                    },
-                    "intermittent": {
-                        "total_records": 30248,
-                        "total_leave_plans": 151,
+                        },
+                        "intermittent": {
                         "total_employees": 140,
+                        "total_plans": 151,
+                        "total_records": 30248,
                         "percentage": 31.38
-                    },
-                    "unknown": {
-                        "total_records": 11505,
-                        "total_leave_plans": 135,
+                        },
+                        "unknown": {
                         "total_employees": 135,
+                        "total_plans": 135,
+                        "total_records": 11505,
                         "percentage": 11.94
-                    }
+                        }
                     },
                     "by_leave_type": {
                     "medical": {

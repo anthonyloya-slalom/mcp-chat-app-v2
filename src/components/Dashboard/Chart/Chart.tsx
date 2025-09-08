@@ -15,9 +15,10 @@ interface ChartProps {
   height?: number | string;
   title?: string;
   pieDataKey?: string;
-  barDataKey?: string;
+  barDataKey?: string | string[];
   barXAxisKey?: string;
   yAxisLabel?: string;
+  barStackLabels?: string[];
 }
 
 export default function Chart({
@@ -30,6 +31,7 @@ export default function Chart({
   barDataKey = "value",
   barXAxisKey = "name",
   yAxisLabel = "name",
+  barStackLabels,
 }: ChartProps) {
 
   const pieSeries = [
@@ -52,19 +54,19 @@ export default function Chart({
     },
   ];
 
-  const barSeries = data.map((item, index) => ({
-    data: data.map((d, i) => i === index ? d[barDataKey] : null),
-    label: item[barXAxisKey],
-    color: colors[index % colors.length],
-    valueFormatter: (value: number | null) => value ? value.toString() : '',
-  }));
-
-  const barXAxis = [
-    {
-      data: data.map(() => ''),
-      scaleType: "band" as const,
-    },
-  ];
+  const barSeries = Array.isArray(barDataKey)
+    ? barDataKey.map((key, idx) => ({
+        data: data.map(d => d[key]),
+        label: barStackLabels ? barStackLabels[idx] : key,
+        color: colors[idx % colors.length],
+        stack: "total",
+      }))
+    : data.map((item, index) => ({
+        data: data.map((d, i) => i === index ? d[barDataKey] : null),
+        label: item[barXAxisKey],
+        color: colors[index % colors.length],
+        valueFormatter: (value: number | null) => value ? value.toString() : '',
+      }));
 
   return (
     <div className={styles.chartContainer}>
@@ -79,7 +81,7 @@ export default function Chart({
         ) : (
           <BarChart
             series={barSeries}
-            xAxis={barXAxis}
+            xAxis={[{ data: data.map(d => d[barXAxisKey]), categoryGapRatio: 0.5 }]}
             yAxis={[{ label: yAxisLabel }]}
             width={typeof width === "number" ? width : 300}
             height={typeof height === "number" ? height : 220}

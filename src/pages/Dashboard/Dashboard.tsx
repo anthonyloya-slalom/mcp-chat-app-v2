@@ -56,6 +56,29 @@ const continuousCount = continuousSummary.continuous.total_employees;
 const intermittentCount = continuousSummary.intermittent.total_employees;
 const unknownCount = continuousSummary.unknown.total_employees;
 
+const byLeaveType = mockChartData.data[0].continuous_vs_intermittent_chart.by_leave_type;
+
+const leaveTypeKeys = ["medical", "parental", "caregiver", "other"];
+const leaveTypeLabels = ["Medical", "Parental", "Caregiver", "Other"];
+const leaveTypeColors = ["#9F95FF", "#D6EC82", "#F8A500", "#E083CD"]; // Lavender, Lt Green, Apricot, Shampoo
+
+const stackedBarData = [
+  {
+    name: "Continuous",
+    ...leaveTypeKeys.reduce((acc, key) => {
+      acc[key] = byLeaveType[key].continuous.employees;
+      return acc;
+    }, {} as Record<string, number>)
+  },
+  {
+    name: "Intermittent",
+    ...leaveTypeKeys.reduce((acc, key) => {
+      acc[key] = byLeaveType[key].intermittent.employees;
+      return acc;
+    }, {} as Record<string, number>)
+  }
+];
+
 export default function Dashboard() {
     const [quarter, setQuarter] = React.useState("This Quarter");
     const [selectedTypes, setSelectedTypes] = React.useState<string[]>([]);
@@ -127,19 +150,17 @@ export default function Dashboard() {
                 <ChartCard
                     title="Continuous vs. Intermittent Leaves"
                     chartType="bar"
-                    countSummary={[
+                    chartData={stackedBarData}
+					countSummary={[
                         { label: "Continuous", value: continuousCount },
                         { label: "Intermittent", value: intermittentCount },
                         { label: "Unknown", value: unknownCount },
                     ]}
-                    chartData={[
-                        { name: "Continuous", value: continuousCount },
-                        { name: "Intermittent", value: intermittentCount },
-                        { name: "Unknown", value: unknownCount },
-                    ]}
-                    barDataKey="value"
+                    chartColors={leaveTypeColors}
+                    barDataKey={leaveTypeKeys} // Pass array of keys for stacking
                     barXAxisKey="name"
-                    yAxisLabel="Number of Employees"
+                    yAxisLabel="Number of Leaves"
+                    barStackLabels={leaveTypeLabels}
                 />
             </div>
         </div>

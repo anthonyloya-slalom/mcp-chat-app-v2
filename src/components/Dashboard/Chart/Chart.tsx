@@ -20,7 +20,7 @@ interface ChartProps {
   pieDataKey?: string;
   barDataKey?: string;
   barXAxisKey?: string;
-  barYAxisKey?: string;
+  yAxisLabel?: string;
 }
 
 const DEFAULT_COLORS = ["#7c3aed", "#e67c30", "#3b7c8c", "#6c4bb6", "#22c55e", "#ef4444"];
@@ -35,7 +35,7 @@ export default function Chart({
   pieDataKey = "value",
   barDataKey = "value",
   barXAxisKey = "name",
-  barYAxisKey = "name",
+  yAxisLabel = "name",
 }: ChartProps) {
 
   const pieSeries = [
@@ -90,6 +90,7 @@ export default function Chart({
         <BarChart
           series={barSeries}
           xAxis={barXAxis}
+          yAxis={[{ label: yAxisLabel }]}
           width={typeof width === "number" ? width : 300}
           height={typeof height === "number" ? height : 220}
           slotProps={{

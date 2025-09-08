@@ -100,6 +100,7 @@ export default function Dashboard() {
 					chartColors={["#22c55e", "#60a5fa", "#f87171", "#fbbf24"]}
 					barDataKey="value"
 					barXAxisKey="name"
+					yAxisLabel="Number of Employees"
 				/>
 				<ChartCard
 					title="Leave Count by State"
@@ -121,7 +122,7 @@ export default function Dashboard() {
 					chartColors={["#60a5fa", "#fbbf24", "#a3a3a3"]}
 					barDataKey="value"
 					barXAxisKey="name"
-					yAxisLabel="Number of Employees"
+					yAxisLabel="Number of Leaves"
 					legendPosition="bottom"
 				/>
 			</div>

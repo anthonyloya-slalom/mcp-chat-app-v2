@@ -18,6 +18,7 @@ interface ChartCardProps {
   pieDataKey?: string;
   barDataKey?: string;
   barXAxisKey?: string;
+  yAxisLabel?: string;
 }
 
 export default function ChartCard({
@@ -29,6 +30,7 @@ export default function ChartCard({
   pieDataKey,
   barDataKey,
   barXAxisKey,
+  yAxisLabel,
 }: ChartCardProps) {
   // Placeholder for save image functionality
   const handleSaveImage = () => {
@@ -58,6 +60,7 @@ export default function ChartCard({
           pieDataKey={pieDataKey}
           barDataKey={barDataKey}
           barXAxisKey={barXAxisKey}
+          yAxisLabel={yAxisLabel}
           width={400}
           height={300}
         />

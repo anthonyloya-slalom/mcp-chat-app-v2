@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { IconButton, Typography } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import styles from "./ChartCard.module.css";
+import ChartPercentageSummary from "../ChartPercentageSummary/ChartPercentageSummary";
 import { CountSummary } from "../CountSummary/CountSummary";
 
 const Chart = dynamic(() => import("../Chart/Chart"), {
@@ -20,6 +21,7 @@ interface ChartCardProps {
   barDataKey?: string;
   barXAxisKey?: string;
   yAxisLabel?: string;
+  summary?: React.ReactNode;
 }
 
 export default function ChartCard({
@@ -32,11 +34,27 @@ export default function ChartCard({
   barDataKey,
   barXAxisKey,
   yAxisLabel,
+  summary,
 }: ChartCardProps) {
   // Placeholder for save image functionality
   const handleSaveImage = () => {
-    // Implement chart image export if needed
   };
+
+  let summaryNode = summary;
+  if (title === "Leave by Stage" && !summary) {
+    const total = chartData.reduce((sum, d) => sum + d.value, 0);
+    const percentages = chartData.map((item: any) => ({
+      value: item.value,
+      percent: total ? ((item.value / total) * 100).toFixed(1) : "0.0"
+    }));
+    const colors = chartColors || ["#22c55e", "#60a5fa", "#f87171", "#fbbf24"];
+    summaryNode = (
+      <ChartPercentageSummary
+        items={percentages}
+        colors={colors}
+      />
+    );
+  }
 
   return (
     <div className={styles.card}>
@@ -70,6 +88,11 @@ export default function ChartCard({
           height={300}
         />
       </div>
+      {summaryNode && (
+        <div className={styles.summary}>
+          {summaryNode}
+        </div>
+      )}
     </div>
   );
 }

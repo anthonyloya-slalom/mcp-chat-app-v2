@@ -2,6 +2,7 @@ import { mockChartData } from "../../lib/mock-chart-data";
 import StatusCard from "../../components/Dashboard/StatusCard/StatusCard";
 import ChartCard from "../../components/Dashboard/ChartCard/ChartCard";
 import styles from "./Dashboard.module.css";
+import React from "react";
 
 const underReview = mockChartData.data[0].leave_status_breakdown.under_review;
 
@@ -47,79 +48,79 @@ const intermittentCount = continuousSummary.intermittent.total_employees;
 const unknownCount = continuousSummary.unknown.total_employees;
 
 export default function Dashboard() {
-	return (
-		<div className={styles.dashboard}>
-			<div className={styles.statusRow}>
-				<StatusCard
-					count={waitingOnHr?.employees ?? 0}
-					title="Waiting on HR"
-					subtitle="Avg. 2.4 days pending"
-					color="#e67c30"
-				/>
-				<StatusCard
-					count={waitingOnEmployee?.employees ?? 0}
-					title="Waiting on Employee"
-					subtitle="Documentation needed"
-					color="#e67c30"
-				/>
-				<StatusCard
-				count={totalUnderReview?.employees ?? 0}
-				title="Under Review by Tilt"
-				subtitle="Processing approval"
-				color="#3b7c8c"
-				/>
-				<StatusCard
-					count={totalActiveLeaves?.employees_currently_on_leave ?? 0}
-					title="Active Leaves"
-					subtitle="4 starting this week"
-					color="#6c4bb6"
-				/>
-			</div>
-			<div className={styles.chartsGrid}>
-				<ChartCard
-					title="Total Leaves"
-					countSummary={mockChartData.data[0].active_leaves.employees_currently_on_leave}
-					chartType="donut"
-					chartData={donutChartData}
-					chartColors={["#7c3aed", "#e67c30", "#3b7c8c", "#fbbf24", "#22c55e"]}
-					pieDataKey="value"
-				/>
-				<ChartCard
-					title="Leave by Stage"
-					chartType="bar"
-					chartData={barChartData}
-					chartColors={["#22c55e", "#60a5fa", "#f87171", "#fbbf24"]}
-					barDataKey="value"
-					barXAxisKey="name"
-					yAxisLabel="Number of Employees"
-				/>
-				<ChartCard
-					title="Leave Count by State"
-					countSummary={mockChartData.data[0].overall_dataset_statistics.unique_employees}
-					chartType="pie"
-					chartData={chartDataByState}
-					chartColors={["#6c4bb6", "#60a5fa", "#f87171", "#fbbf24", "#22c55e", "#a3a3a3"]}
-					pieDataKey="value"
-				/>
-				<ChartCard
-					title="Continuous vs. Intermittent Leaves"
-					chartType="bar"
-					countSummary={[
-						{ label: "Continuous", value: continuousCount },
-						{ label: "Intermittent", value: intermittentCount },
-						{ label: "Unknown", value: unknownCount },
-					]}
-					chartData={[
-						{ name: "Continuous", value: continuousCount },
-						{ name: "Intermittent", value: intermittentCount },
-						{ name: "Unknown", value: unknownCount },
-					]}
-					chartColors={["#60a5fa", "#fbbf24", "#a3a3a3"]}
-					barDataKey="value"
-					barXAxisKey="name"
-					yAxisLabel="Number of Employees"
-				/>
-			</div>
-		</div>
-	);
+    return (
+        <div className={styles.dashboard}>
+            <div className={styles.statusRow}>
+                <StatusCard
+                    count={waitingOnHr?.employees ?? 0}
+                    title="Waiting on HR"
+                    subtitle="Avg. 2.4 days pending"
+                    color="#e67c30"
+                />
+                <StatusCard
+                    count={waitingOnEmployee?.employees ?? 0}
+                    title="Waiting on Employee"
+                    subtitle="Documentation needed"
+                    color="#e67c30"
+                />
+                <StatusCard
+                count={totalUnderReview?.employees ?? 0}
+                title="Under Review by Tilt"
+                subtitle="Processing approval"
+                color="#3b7c8c"
+                />
+                <StatusCard
+                    count={totalActiveLeaves?.employees_currently_on_leave ?? 0}
+                    title="Active Leaves"
+                    subtitle="4 starting this week"
+                    color="#6c4bb6"
+                />
+            </div>
+            <div className={styles.chartsGrid}>
+                <ChartCard
+                    title="Total Leaves"
+                    countSummary={mockChartData.data[0].active_leaves.employees_currently_on_leave}
+                    chartType="donut"
+                    chartData={donutChartData}
+                    chartColors={["#7c3aed", "#e67c30", "#3b7c8c", "#fbbf24", "#22c55e"]}
+                    pieDataKey="value"
+                />
+                <ChartCard
+                    title="Leave by Stage"
+                    chartType="bar"
+                    chartData={barChartData}
+                    chartColors={["#22c55e", "#60a5fa", "#f87171", "#fbbf24"]}
+                    barDataKey="value"
+                    barXAxisKey="name"
+                    yAxisLabel="Number of Employees"
+                />
+                <ChartCard
+                    title="Leave Count by State"
+                    countSummary={mockChartData.data[0].overall_dataset_statistics.unique_employees}
+                    chartType="pie"
+                    chartData={chartDataByState}
+                    chartColors={["#6c4bb6", "#60a5fa", "#f87171", "#fbbf24", "#22c55e", "#a3a3a3"]}
+                    pieDataKey="value"
+                />
+                <ChartCard
+                    title="Continuous vs. Intermittent Leaves"
+                    chartType="bar"
+                    countSummary={[
+                        { label: "Continuous", value: continuousCount },
+                        { label: "Intermittent", value: intermittentCount },
+                        { label: "Unknown", value: unknownCount },
+                    ]}
+                    chartData={[
+                        { name: "Continuous", value: continuousCount },
+                        { name: "Intermittent", value: intermittentCount },
+                        { name: "Unknown", value: unknownCount },
+                    ]}
+                    chartColors={["#60a5fa", "#fbbf24", "#a3a3a3"]}
+                    barDataKey="value"
+                    barXAxisKey="name"
+                    yAxisLabel="Number of Employees"
+                />
+            </div>
+        </div>
+    );
 }

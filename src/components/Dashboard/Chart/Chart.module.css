@@ -1,6 +1,5 @@
 .chartContainer {
   width: 100%;
-  /* Remove background, border, and box-shadow for no frame */
   background: none;
   border-radius: 0;
   box-shadow: none;
@@ -24,14 +23,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 0;
-  padding-bottom: 0;
 }
 
 .chartLegend {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
   margin-top: 0.5rem;
   font-size: 0.95rem;
 }

@@ -1,11 +1,7 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
 import {
   PieChart,
-  PieChartProps,
   BarChart,
-  BarChartProps,
-  ChartsColorPalette,
 } from "@mui/x-charts";
 import styles from "./Chart.module.css";
 
@@ -69,7 +65,7 @@ export default function Chart({
   
   const barXAxis = [
     {
-      data: data.map(() => ''), // Empty labels for x-axis
+      data: data.map(() => ''),
       scaleType: "band" as const,
     },
   ];
@@ -97,12 +93,9 @@ export default function Chart({
                 position: { vertical: 'bottom', horizontal: 'center' },
               },
             }}
-            margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+            margin={{ top: 20, right: 20, bottom: 10, left: 20 }}
           />
         )}
-      </div>
-      <div className={styles.chartLegend}>
-        {/* Legend goes here */}
       </div>
     </div>
   );

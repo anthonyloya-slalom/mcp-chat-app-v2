@@ -1,12 +1,12 @@
 import React from "react";
 import { colors } from "@/components/constants/colors";
-import styles from "./ChartPercentageSummary.module.css";
+import styles from "./PercentageSummary.module.css";
 
-interface ChartPercentageSummaryProps {
+interface PercentageSummaryProps {
   items: { value: number; percent: string }[];
 }
 
-export default function ChartPercentageSummary({ items }: ChartPercentageSummaryProps) {
+export default function PercentageSummary({ items }: PercentageSummaryProps) {
   return (
     <div className={styles.leaveByStageSummaryNode}>
       <div className={styles.leaveByStageDivider} />

@@ -1,0 +1,38 @@
+.leaveTypesSelect {
+  background: #f8f6f3 !important;
+  border-radius: 999px !important;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #2d2323;
+  min-width: 140px;
+  padding-left: 1.2rem !important;
+  padding-right: 1.2rem !important;
+  height: 44px !important;
+  box-shadow: none !important;
+  border: 1px solid #ece9e3 !important;
+  outline: none !important;
+  display: flex;
+  align-items: center;
+}
+
+.MuiSelect-select, .MuiSelect-outlined {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: #2d2323 !important;
+  font-weight: 500;
+}
+
+.MuiOutlinedInput-notchedOutline {
+  border: none !important;
+}
+
+.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border: none !important;
+}
+
+.MuiSelect-icon {
+  color: #888 !important;
+  right: 12px;
+}

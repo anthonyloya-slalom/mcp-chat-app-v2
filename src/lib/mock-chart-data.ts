@@ -35,10 +35,6 @@ export const mockChartData = {
                     "OTHER": {
                         "records": 0,
                         "employees": 0
-                    },
-                    "MILITARY": {
-                        "records": 0,
-                        "employees": 0
                     }
                     }
                 },
@@ -109,11 +105,6 @@ export const mockChartData = {
                         "continuous": {"records": 1767, "plans": 153, "employees": 144},
                         "intermittent": {"records": 306, "plans": 10, "employees": 10},
                         "unknown": {"records": 418, "plans": 33, "employees": 32}
-                    },
-                    "military": {
-                        "continuous": {"records": 758, "plans": 16, "employees": 8},
-                        "intermittent": {"records": 19, "plans": 1, "employees": 2},
-                        "unknown": {"records": 0, "plans": 0, "employees": 0}
                     }
                     }
                 },
@@ -292,13 +283,6 @@ export const mockChartData = {
                 "geographic_distribution": {
                     "top_10_states": [
                     {
-                        "state_code": "TX",
-                        "state_name": "Texas",
-                        "records": 11240,
-                        "employees": 95,
-                        "percentage_of_total_records": 11.67
-                    },
-                    {
                         "state_code": "CA", 
                         "state_name": "California",
                         "records": 10774,
@@ -327,40 +311,12 @@ export const mockChartData = {
                         "percentage_of_total_records": 5.43
                     },
                     {
-                        "state_code": "OH", 
-                        "state_name": "Ohio",
-                        "records": 4918,
-                        "employees": 43,
-                        "percentage_of_total_records": 5.10
-                    },
-                    {
-                        "state_code": "IN",
-                        "state_name": "Indiana",
-                        "records": 3972,
-                        "employees": 35,
-                        "percentage_of_total_records": 4.12
-                    },
-                    {
-                        "state_code": "TN",
-                        "state_name": "Tennessee",
-                        "records": 3761,
-                        "employees": 36,
-                        "percentage_of_total_records": 3.90
-                    },
-                    {
                         "state_code": "AZ",
                         "state_name": "Arizona",
                         "records": 3501,
                         "employees": 32,
                         "percentage_of_total_records": 3.63
                     },
-                    {
-                        "state_code": "GA",
-                        "state_name": "Georgia", 
-                        "records": 3050,
-                        "employees": 34,
-                        "percentage_of_total_records": 3.17
-                    }
                     ]
                 },
                 "quick_answers_for_charts": {
@@ -380,7 +336,6 @@ export const mockChartData = {
                         "parental": 18,
                         "caregiver": 3,
                         "other": 0,
-                        "military": 0
                     }
                     },
                     "leave_by_stage": {

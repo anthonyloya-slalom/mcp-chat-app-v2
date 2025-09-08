@@ -242,3 +242,60 @@ html, body {
 .prose.text-black, .prose.text-black * {
   color: #000 !important;
 }
+
+.MuiPaper-root.MuiMenu-paper {
+  background: #fff !important;
+  border-radius: 0 !important;
+  box-shadow: 0 2px 8px 0 rgba(60, 60, 60, 0.10) !important;
+  min-width: 180px !important;
+  margin-top: 8px !important;
+}
+
+.MuiMenuItem-root {
+  font-size: 1.08rem !important;
+  color: #3a2d2d !important;
+  font-weight: 500 !important;
+  border-radius: 0 !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+.MuiMenuItem-root.Mui-selected,
+.MuiMenuItem-root.Mui-selected:hover {
+  color: #3a7c6c !important;
+  font-weight: 700 !important;
+  background: none !important;
+}
+
+.MuiMenuItem-root:hover {
+  background: #f8f6f3 !important;
+  color: #2d2323 !important;
+}
+
+.MuiListItemIcon-root, .MuiCheckbox-root {
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin-right: 12px !important;
+}
+
+.MuiCheckbox-root {
+  color: #3a7c6c !important;
+  padding: 0 !important;
+  margin-right: 12px !important;
+  background: none !important;
+  border-radius: 50% !important;
+}
+
+.MuiCheckbox-root.Mui-checked {
+  color: #3a7c6c !important;
+  background: none !important;
+}
+
+.MuiCheckbox-root:hover {
+  background: none !important;
+}
+
+.MuiCheckbox-root svg {
+  font-size: 1.4rem !important;
+  font-weight: bold !important;
+}

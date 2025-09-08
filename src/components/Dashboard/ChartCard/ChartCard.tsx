@@ -3,8 +3,8 @@ import dynamic from "next/dynamic";
 import { IconButton, Typography } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import styles from "./ChartCard.module.css";
-import ChartPercentageSummary from "../ChartPercentageSummary/ChartPercentageSummary";
-import { CountSummary } from "../CountSummary/CountSummary";
+import ChartPercentageSummary from "../Chart/Summaries/PercentageSummary/PercentageSummary";
+import { CountSummary } from "../Chart/Summaries/CountSummary/CountSummary";
 
 const Chart = dynamic(() => import("../Chart/Chart"), {
   ssr: false,

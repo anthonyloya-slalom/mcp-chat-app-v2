@@ -21,3 +21,23 @@
   gap: 2rem;
   width: 100%;
 }
+
+.dashboardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.dashboardTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #3a2d2d;
+  margin: 0;
+}
+
+.dashboardFilters {
+  display: flex;
+  gap: 1.2rem;
+}

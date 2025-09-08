@@ -3,6 +3,15 @@ import StatusCard from "../../components/Dashboard/StatusCard/StatusCard";
 import ChartCard from "../../components/Dashboard/ChartCard/ChartCard";
 import styles from "./Dashboard.module.css";
 import React from "react";
+import TimeRangeDropdown from "@/components/Dashboard/Dropdowns/TimeRangeDropdown/TimeRangeDropdown";
+import LeaveTypesDropdown from "@/components/Dashboard/Dropdowns/LeaveTypesDropdown/LeaveTypesDropdown";
+
+const leaveTypes = [
+  "Medical",
+  "Parental",
+  "Caregiver",
+  "Other",
+];
 
 const underReview = mockChartData.data[0].leave_status_breakdown.under_review;
 
@@ -48,8 +57,24 @@ const intermittentCount = continuousSummary.intermittent.total_employees;
 const unknownCount = continuousSummary.unknown.total_employees;
 
 export default function Dashboard() {
+    const [quarter, setQuarter] = React.useState("This Quarter");
+    const [selectedTypes, setSelectedTypes] = React.useState<string[]>([]);
+
     return (
         <div className={styles.dashboard}>
+            <div className={styles.dashboardHeader}>
+                <h1 className={styles.dashboardTitle}>Dashboard</h1>
+                <div className={styles.dashboardFilters}>
+                    <TimeRangeDropdown
+                      value={quarter}
+                      onChange={setQuarter}
+                    />
+                    <LeaveTypesDropdown
+                      value={selectedTypes}
+                      onChange={setSelectedTypes}
+                    />
+                </div>
+            </div>
             <div className={styles.statusRow}>
                 <StatusCard
                     count={waitingOnHr?.employees ?? 0}

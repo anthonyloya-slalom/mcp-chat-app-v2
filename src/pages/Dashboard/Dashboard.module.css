@@ -3,6 +3,7 @@
   flex-direction: column;
   gap: 2.5rem;
   padding: 2rem;
+  background-color: #FAF8F5;
 }
 
 .statusRow {

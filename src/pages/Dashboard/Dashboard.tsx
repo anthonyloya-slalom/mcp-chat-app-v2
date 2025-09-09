@@ -139,6 +139,8 @@ export default function Dashboard() {
                     barDataKey="value"
                     barXAxisKey="name"
                     yAxisLabel="Number of Employees"
+					categoryGapRatio={0.01}
+					showXAxisLabel={false}
                 />
                 <ChartCard
                     title="Leave Count by State"
@@ -161,6 +163,7 @@ export default function Dashboard() {
                     barXAxisKey="name"
                     yAxisLabel="Number of Leaves"
                     barStackLabels={leaveTypeLabels}
+					categoryGapRatio={0.6}
                 />
             </div>
         </div>

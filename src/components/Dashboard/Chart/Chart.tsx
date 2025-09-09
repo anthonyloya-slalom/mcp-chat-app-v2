@@ -19,6 +19,8 @@ interface ChartProps {
   barXAxisKey?: string;
   yAxisLabel?: string;
   barStackLabels?: string[];
+  categoryGapRatio?: number;
+  showXAxisLabel?: boolean;
 }
 
 export default function Chart({
@@ -32,6 +34,8 @@ export default function Chart({
   barXAxisKey = "name",
   yAxisLabel = "name",
   barStackLabels,
+  categoryGapRatio,
+  showXAxisLabel = true,
 }: ChartProps) {
 
   const pieSeries = [
@@ -81,7 +85,9 @@ export default function Chart({
         ) : (
           <BarChart
             series={barSeries}
-            xAxis={[{ data: data.map(d => d[barXAxisKey]), categoryGapRatio: 0.1 }]}
+            xAxis={[{
+              data: data.map(d => d[barXAxisKey]), categoryGapRatio: categoryGapRatio ?? 0.1, tickLabelStyle: { display: showXAxisLabel ? 'auto' : 'none' },
+            }]}
             yAxis={[{ label: yAxisLabel }]}
             width={typeof width === "number" ? width : 300}
             height={typeof height === "number" ? height : 220}
@@ -91,7 +97,8 @@ export default function Chart({
                 position: { vertical: 'bottom', horizontal: 'center' },
               },
             }}
-            margin={{ top: 20, right: 20, bottom: 10, left: 20 }}
+            margin={{ top: 20, right: 20, bottom: 10, left: 0 }}
+            skipAnimation={false}
           />
         )}
       </div>

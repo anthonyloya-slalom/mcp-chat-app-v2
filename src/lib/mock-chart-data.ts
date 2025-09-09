@@ -42,7 +42,7 @@ export const mockChartData = {
                     "approved_hr": {
                     "records": 91227,
                     "leave_plans": 1241,
-                    "employees": 978,
+                    "employees": 278,
                     "percentage": 94.61
                     },
                     "approved_employee": {

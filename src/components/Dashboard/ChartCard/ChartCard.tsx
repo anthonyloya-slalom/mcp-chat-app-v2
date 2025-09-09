@@ -21,6 +21,8 @@ interface ChartCardProps {
   barXAxisKey?: string;
   yAxisLabel?: string;
   summary?: React.ReactNode;
+  categoryGapRatio?: number;
+  showXAxisLabel?: boolean;
 }
 
 export default function ChartCard({
@@ -33,6 +35,8 @@ export default function ChartCard({
   barXAxisKey,
   yAxisLabel,
   summary,
+  categoryGapRatio,
+  showXAxisLabel,
 }: ChartCardProps) {
   // Placeholder for save image functionality
   const handleSaveImage = () => {
@@ -81,6 +85,8 @@ export default function ChartCard({
           yAxisLabel={yAxisLabel}
           width={400}
           height={300}
+          categoryGapRatio={categoryGapRatio}
+          showXAxisLabel={showXAxisLabel}
         />
       </div>
       {summaryNode && (

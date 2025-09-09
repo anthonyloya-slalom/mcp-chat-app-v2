@@ -157,7 +157,7 @@ export default function Dashboard() {
                         { label: "Unknown", value: unknownCount },
                     ]}
                     chartColors={leaveTypeColors}
-                    barDataKey={leaveTypeKeys} // Pass array of keys for stacking
+                    barDataKey={leaveTypeKeys}
                     barXAxisKey="name"
                     yAxisLabel="Number of Leaves"
                     barStackLabels={leaveTypeLabels}

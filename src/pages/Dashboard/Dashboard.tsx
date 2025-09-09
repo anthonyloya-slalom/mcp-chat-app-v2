@@ -60,7 +60,7 @@ const byLeaveType = mockChartData.data[0].continuous_vs_intermittent_chart.by_le
 
 const leaveTypeKeys = ["medical", "parental", "caregiver", "other"];
 const leaveTypeLabels = ["Medical", "Parental", "Caregiver", "Other"];
-const leaveTypeColors = ["#9F95FF", "#D6EC82", "#F8A500", "#E083CD"]; // Lavender, Lt Green, Apricot, Shampoo
+const leaveTypeColors = ["#9F95FF", "#D6EC82", "#F8A500", "#E083CD"]; 
 
 const stackedBarData = [
   {
@@ -85,86 +85,88 @@ export default function Dashboard() {
 
     return (
         <div className={styles.dashboard}>
-            <div className={styles.dashboardHeader}>
-                <h1 className={styles.dashboardTitle}>Dashboard</h1>
-                <div className={styles.dashboardFilters}>
-                    <TimeRangeDropdown
-                      value={quarter}
-                      onChange={setQuarter}
+            <div className={styles.contentGrid}>
+                <div className={styles.dashboardHeader}>
+                    <h1 className={styles.dashboardTitle}>Dashboard</h1>
+                    <div className={styles.dashboardFilters}>
+                        <TimeRangeDropdown
+                          value={quarter}
+                          onChange={setQuarter}
+                        />
+                        <LeaveTypesDropdown
+                          value={selectedTypes}
+                          onChange={setSelectedTypes}
+                        />
+                    </div>
+                </div>
+                <div className={styles.statusRow}>
+                    <StatusCard
+                        count={waitingOnHr?.employees ?? 0}
+                        title="Waiting on HR"
+                        subtitle="Avg. 2.4 days pending"
+                        color="#e67c30"
                     />
-                    <LeaveTypesDropdown
-                      value={selectedTypes}
-                      onChange={setSelectedTypes}
+                    <StatusCard
+                        count={waitingOnEmployee?.employees ?? 0}
+                        title="Waiting on Employee"
+                        subtitle="Documentation needed"
+                        color="#e67c30"
+                    />
+                    <StatusCard
+                        count={totalUnderReview?.employees ?? 0}
+                        title="Under Review by Tilt"
+                        subtitle="Processing approval"
+                        color="#3b7c8c"
+                    />
+                    <StatusCard
+                        count={totalActiveLeaves?.employees_currently_on_leave ?? 0}
+                        title="Active Leaves"
+                        subtitle="4 starting this week"
+                        color="#6c4bb6"
                     />
                 </div>
-            </div>
-            <div className={styles.statusRow}>
-                <StatusCard
-                    count={waitingOnHr?.employees ?? 0}
-                    title="Waiting on HR"
-                    subtitle="Avg. 2.4 days pending"
-                    color="#e67c30"
-                />
-                <StatusCard
-                    count={waitingOnEmployee?.employees ?? 0}
-                    title="Waiting on Employee"
-                    subtitle="Documentation needed"
-                    color="#e67c30"
-                />
-                <StatusCard
-                count={totalUnderReview?.employees ?? 0}
-                title="Under Review by Tilt"
-                subtitle="Processing approval"
-                color="#3b7c8c"
-                />
-                <StatusCard
-                    count={totalActiveLeaves?.employees_currently_on_leave ?? 0}
-                    title="Active Leaves"
-                    subtitle="4 starting this week"
-                    color="#6c4bb6"
-                />
-            </div>
-            <div className={styles.chartsGrid}>
-                <ChartCard
-                    title="Total Leaves"
-                    countSummary={mockChartData.data[0].active_leaves.employees_currently_on_leave}
-                    chartType="donut"
-                    chartData={donutChartData}
-                    pieDataKey="value"
-                />
-                <ChartCard
-                    title="Leave by Stage"
-                    chartType="bar"
-                    chartData={barChartData}
-                    barDataKey="value"
-                    barXAxisKey="name"
-                    yAxisLabel="Number of Employees"
-					categoryGapRatio={0.05}
-					showXAxisLabel={false}
-                />
-                <ChartCard
-                    title="Leave Count by State"
-                    countSummary={mockChartData.data[0].overall_dataset_statistics.unique_employees}
-                    chartType="pie"
-                    chartData={chartDataByState}
-                    pieDataKey="value"
-                />
-                <ChartCard
-                    title="Continuous vs. Intermittent Leaves"
-                    chartType="bar"
-                    chartData={stackedBarData}
-					countSummary={[
-                        { label: "Continuous", value: continuousCount },
-                        { label: "Intermittent", value: intermittentCount },
-                        { label: "Unknown", value: unknownCount },
-                    ]}
-                    chartColors={leaveTypeColors}
-                    barDataKey={leaveTypeKeys}
-                    barXAxisKey="name"
-                    yAxisLabel="Number of Leaves"
-                    barStackLabels={leaveTypeLabels}
-					categoryGapRatio={0.6}
-                />
+                <div className={styles.chartsGrid}>
+                    <ChartCard
+                        title="Total Leaves"
+                        countSummary={mockChartData.data[0].active_leaves.employees_currently_on_leave}
+                        chartType="donut"
+                        chartData={donutChartData}
+                        pieDataKey="value"
+                    />
+                    <ChartCard
+                        title="Leave by Stage"
+                        chartType="bar"
+                        chartData={barChartData}
+                        barDataKey="value"
+                        barXAxisKey="name"
+                        yAxisLabel="Number of Employees"
+                        categoryGapRatio={0.05}
+                        showXAxisLabel={false}
+                    />
+                    <ChartCard
+                        title="Leave Count by State"
+                        countSummary={mockChartData.data[0].overall_dataset_statistics.unique_employees}
+                        chartType="pie"
+                        chartData={chartDataByState}
+                        pieDataKey="value"
+                    />
+                    <ChartCard
+                        title="Continuous vs. Intermittent Leaves"
+                        chartType="bar"
+                        chartData={stackedBarData}
+                        countSummary={[
+                            { label: "Continuous", value: continuousCount },
+                            { label: "Intermittent", value: intermittentCount },
+                            { label: "Unknown", value: unknownCount },
+                        ]}
+                        chartColors={leaveTypeColors}
+                        barDataKey={leaveTypeKeys}
+                        barXAxisKey="name"
+                        yAxisLabel="Number of Leaves"
+                        barStackLabels={leaveTypeLabels}
+                        categoryGapRatio={0.6}
+                    />
+                </div>
             </div>
         </div>
     );

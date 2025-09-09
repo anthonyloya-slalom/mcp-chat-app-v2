@@ -88,6 +88,7 @@ export default function Chart({
             xAxis={[{
               data: data.map(d => d[barXAxisKey]), 
               categoryGapRatio: categoryGapRatio ?? 0.1, 
+              barGapRatio: 0.001,
               tickLabelStyle: { display: showXAxisLabel ? 'auto' : 'none' },
             }]}
             yAxis={[{ label: yAxisLabel }]}

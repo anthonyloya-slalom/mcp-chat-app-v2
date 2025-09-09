@@ -12,10 +12,10 @@ export default function StatusCard({ count, title, subtitle, color }: StatusCard
   return (
     <div className={styles.card}>
       <div className={styles.row}>
-        <span className={styles.count} style={{ color: color || "#7c3aed" }}>
-          {count}
-        </span>
         <div className={styles.textBlock}>
+          <span className={styles.count} style={{ color: color || "#7c3aed" }}>
+            {count}
+          </span>
           <span className={styles.title}>{title}</span>
           <span className={styles.subtitle}>{subtitle}</span>
         </div>

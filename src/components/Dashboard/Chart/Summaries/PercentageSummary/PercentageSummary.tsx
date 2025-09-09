@@ -3,7 +3,7 @@ import { percentageSummaryColors } from "@/components/constants/colors";
 import styles from "./PercentageSummary.module.css";
 
 interface PercentageSummaryProps {
-  items: { value: number; percent: string }[];
+  items: { value: number; percent: string; label?: string }[];
 }
 
 export default function PercentageSummary({ items }: PercentageSummaryProps) {
@@ -19,6 +19,11 @@ export default function PercentageSummary({ items }: PercentageSummaryProps) {
             >
               {item.value} ({item.percent}%)
             </span>
+            {item.label && (
+              <span className={styles.leaveByStagePercentLabel}>
+                {item.label}
+              </span>
+            )}
           </span>
         ))}
       </div>

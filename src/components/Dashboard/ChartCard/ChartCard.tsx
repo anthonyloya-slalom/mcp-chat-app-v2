@@ -47,7 +47,8 @@ export default function ChartCard({
     const total = chartData.reduce((sum, d) => sum + d.value, 0);
     const percentages = chartData.map((item: any) => ({
       value: item.value,
-      percent: total ? ((item.value / total) * 100).toFixed(1) : "0.0"
+      percent: total ? ((item.value / total) * 100).toFixed(1) : "0.0",
+      label: item.name 
     }));
     summaryNode = (
       <ChartPercentageSummary

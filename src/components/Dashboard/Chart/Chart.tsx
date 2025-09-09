@@ -86,7 +86,9 @@ export default function Chart({
           <BarChart
             series={barSeries}
             xAxis={[{
-              data: data.map(d => d[barXAxisKey]), categoryGapRatio: categoryGapRatio ?? 0.1, tickLabelStyle: { display: showXAxisLabel ? 'auto' : 'none' },
+              data: data.map(d => d[barXAxisKey]), 
+              categoryGapRatio: categoryGapRatio ?? 0.1, 
+              tickLabelStyle: { display: showXAxisLabel ? 'auto' : 'none' },
             }]}
             yAxis={[{ label: yAxisLabel }]}
             width={typeof width === "number" ? width : 300}

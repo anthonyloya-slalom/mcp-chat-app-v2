@@ -1,5 +1,5 @@
 import React from "react";
-import { colors } from "@/components/constants/colors";
+import { percentageSummaryColors } from "@/components/constants/colors";
 import styles from "./PercentageSummary.module.css";
 
 interface PercentageSummaryProps {
@@ -15,7 +15,7 @@ export default function PercentageSummary({ items }: PercentageSummaryProps) {
           <span key={idx} className={styles.leaveByStagePercentItem}>
             <span
               className={styles.leaveByStagePercent}
-              style={{ color: colors[idx] }}
+              style={{ color: percentageSummaryColors[idx] }}
             >
               {item.value} ({item.percent}%)
             </span>

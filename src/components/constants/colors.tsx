@@ -5,3 +5,11 @@ export const colors = [
   "#E083CD", // Shampoo
   "#45A8D1", // Sky
 ];
+
+export const percentageSummaryColors = [
+  "#8DA930", // Lt Green, darker
+  "#9F95FF", // Lavender
+  "#F8A500", // Apricot
+  "#E083CD", // Shampoo
+  "#45A8D1", // Sky
+];

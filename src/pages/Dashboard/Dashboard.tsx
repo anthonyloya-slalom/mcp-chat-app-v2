@@ -6,13 +6,6 @@ import React from "react";
 import TimeRangeDropdown from "@/components/Dashboard/Dropdowns/TimeRangeDropdown/TimeRangeDropdown";
 import LeaveTypesDropdown from "@/components/Dashboard/Dropdowns/LeaveTypesDropdown/LeaveTypesDropdown";
 
-const leaveTypes = [
-  "Medical",
-  "Parental",
-  "Caregiver",
-  "Other",
-];
-
 const underReview = mockChartData.data[0].leave_status_breakdown.under_review;
 
 const waitingOnHr = underReview.waiting_on_hr;
@@ -66,7 +59,6 @@ type ByLeaveType = Record<LeaveTypeKey, {
 const byLeaveType = mockChartData.data[0].continuous_vs_intermittent_chart.by_leave_type as ByLeaveType;
 
 const leaveTypeKeys: LeaveTypeKey[] = ["medical", "parental", "caregiver", "other"];
-const leaveTypeLabels = ["Medical", "Parental", "Caregiver", "Other"];
 
 const stackedBarData = [
   {

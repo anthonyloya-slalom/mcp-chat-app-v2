@@ -54,7 +54,7 @@ export default function Chart({
       valueLabelPlacement: "center" as const,
       valueLabelDisplay: "inside",
       valueLabelStyle: { fontWeight: 700, fontSize: 16, color: "white" },
-      arcLabel: (params) => params.value ?? '',
+      arcLabel: (params: { value?: number }) => params.value !== undefined ? String(params.value) : '',
     },
   ];
 

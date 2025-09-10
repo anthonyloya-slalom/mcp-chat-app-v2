@@ -56,11 +56,17 @@ const continuousCount = continuousSummary.continuous.total_employees;
 const intermittentCount = continuousSummary.intermittent.total_employees;
 const unknownCount = continuousSummary.unknown.total_employees;
 
-const byLeaveType = mockChartData.data[0].continuous_vs_intermittent_chart.by_leave_type;
+type LeaveTypeKey = "medical" | "parental" | "caregiver" | "other";
+type ByLeaveType = Record<LeaveTypeKey, {
+  continuous: { records: number; plans: number; employees: number; };
+  intermittent: { records: number; plans: number; employees: number; };
+  unknown: { records: number; plans: number; employees: number; };
+}>;
 
-const leaveTypeKeys = ["medical", "parental", "caregiver", "other"];
+const byLeaveType = mockChartData.data[0].continuous_vs_intermittent_chart.by_leave_type as ByLeaveType;
+
+const leaveTypeKeys: LeaveTypeKey[] = ["medical", "parental", "caregiver", "other"];
 const leaveTypeLabels = ["Medical", "Parental", "Caregiver", "Other"];
-const leaveTypeColors = ["#9F95FF", "#D6EC82", "#F8A500", "#E083CD"]; 
 
 const stackedBarData = [
   {
@@ -159,11 +165,9 @@ export default function Dashboard() {
                             { label: "Intermittent", value: intermittentCount },
                             { label: "Unknown", value: unknownCount },
                         ]}
-                        chartColors={leaveTypeColors}
                         barDataKey={leaveTypeKeys}
                         barXAxisKey="name"
                         yAxisLabel="Number of Leaves"
-                        barStackLabels={leaveTypeLabels}
                         categoryGapRatio={0.6}
                     />
                 </div>

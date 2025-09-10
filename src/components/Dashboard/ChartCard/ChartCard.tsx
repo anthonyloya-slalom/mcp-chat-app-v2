@@ -13,11 +13,11 @@ const Chart = dynamic(() => import("../Chart/Chart"), {
 
 interface ChartCardProps {
   title: string;
-  countSummary?: any[];
+  countSummary?: any[] | number;
   chartType: "pie" | "donut" | "bar";
   chartData: any[];
   pieDataKey?: string;
-  barDataKey?: string;
+  barDataKey?: string | string[];
   barXAxisKey?: string;
   yAxisLabel?: string;
   summary?: React.ReactNode;

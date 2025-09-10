@@ -39,29 +39,26 @@ export const mockChartData = {
                     }
                 },
                 "leave_by_stage_chart": {
-                    "approved_hr": {
-                    "records": 91227,
-                    "leave_plans": 1241,
-                    "employees": 278,
-                    "percentage": 94.61
+                    "pre_leave": {
+                        "total_records": 921,
+                        "unique_employees": 22,
+                        "unique_plans": 22,
+                        "upcoming_coverage_planning": "16 parental leaves starting soon",
+                        "average_days_until_start": "estimated 3-30 days"
                     },
-                    "approved_employee": {
-                    "records": 4224,
-                    "leave_plans": 85,
-                    "employees": 74,
-                    "percentage": 4.38
+                    "currently_on_leave": {
+                        "total_records": 3083,
+                        "unique_employees": 42,
+                        "unique_plans": 42,
+                        "workforce_impact": "4.3% of workforce currently unavailable",
+                        "average_leave_duration": "73 days per employee (3083 records / 42 employees)"
                     },
-                    "rejected_hr": {
-                    "records": 841,
-                    "leave_plans": 0,
-                    "employees": 24,
-                    "percentage": 0.87
-                    },
-                    "sent_to_employee": {
-                    "records": 117,
-                    "leave_plans": 0,
-                    "employees": 21,
-                    "percentage": 0.12
+                    "returned_from_leave": {
+                        "total_records": 31632,
+                        "unique_employees": 828,
+                        "unique_plans": 1012,
+                        "return_coordination": "828 employees have completed leave",
+                        "average_completed_duration": "38 days per employee (31632 records / 828 employees)"
                     }
                 },
                 "continuous_vs_intermittent_chart": {

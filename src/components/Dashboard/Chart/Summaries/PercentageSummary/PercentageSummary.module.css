@@ -10,10 +10,9 @@
 }
 
 .leaveByStagePercentRow {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-items: center;
   width: 100%;
 }
 
@@ -30,7 +29,7 @@
 
 .leaveByStagePercentLabel {
   display: block;
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: black;
   margin-top: 0.15rem;
   text-align: center;

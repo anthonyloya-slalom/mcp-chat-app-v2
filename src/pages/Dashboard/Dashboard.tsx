@@ -37,10 +37,9 @@ const donutChartData = Object.entries(activeByLeaveType).map(([type, obj]) => ({
 
 const leaveByStage = mockChartData.data[0].leave_by_stage_chart;
 const barChartData = [
-  { name: "Approved by HR", value: leaveByStage.approved_hr.employees },
-  { name: "Approved by Employee", value: leaveByStage.approved_employee.employees },
-  { name: "Rejected by HR", value: leaveByStage.rejected_hr.employees },
-  { name: "Sent to Employee", value: leaveByStage.sent_to_employee.employees },
+  { name: "Pre-Leave", value: leaveByStage.pre_leave.unique_employees },
+  { name: "On Leave", value: leaveByStage.currently_on_leave.unique_employees },
+  { name: "Returned", value: leaveByStage.returned_from_leave.unique_employees },
 ];
 
 const continuousSummary = mockChartData.data[0].continuous_vs_intermittent_chart.summary;

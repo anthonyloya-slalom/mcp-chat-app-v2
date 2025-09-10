@@ -40,9 +40,11 @@ export default function Chart({
   showXAxisLabel = true,
 }: ChartProps) {
 
+  const filteredPieData = data.filter(d => d[pieDataKey] !== 0);
+
   const pieSeries = [
     {
-      data: data.map((d, i) => ({
+      data: filteredPieData.map((d, i) => ({
         id: d.id ?? d[barXAxisKey] ?? i,
         value: d[pieDataKey],
         label: d.name ?? d[barXAxisKey] ?? "",

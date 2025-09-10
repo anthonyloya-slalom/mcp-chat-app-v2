@@ -20,6 +20,7 @@ interface ChartProps {
   yAxisLabel?: string;
   barStackLabels?: string[];
   categoryGapRatio?: number;
+  barGapRatio?: number;
   showXAxisLabel?: boolean;
 }
 
@@ -35,6 +36,7 @@ export default function Chart({
   yAxisLabel = "name",
   barStackLabels,
   categoryGapRatio,
+  barGapRatio,
   showXAxisLabel = true,
 }: ChartProps) {
 
@@ -87,8 +89,8 @@ export default function Chart({
             series={barSeries}
             xAxis={[{
               data: data.map(d => d[barXAxisKey]), 
-              categoryGapRatio: categoryGapRatio ?? 0.1, 
-              barGapRatio: 0.001,
+              categoryGapRatio: categoryGapRatio ?? 0, 
+              barGapRatio: barGapRatio ?? 0,
               tickLabelStyle: { display: showXAxisLabel ? 'auto' : 'none' },
             }]}
             yAxis={[{ label: yAxisLabel }]}

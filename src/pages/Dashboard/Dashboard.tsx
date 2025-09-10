@@ -146,7 +146,8 @@ export default function Dashboard() {
                         barDataKey="value"
                         barXAxisKey="name"
                         yAxisLabel="Number of Employees"
-                        categoryGapRatio={0.05}
+                        categoryGapRatio={-0.5}
+						barGapRatio={-0.5}
                         showXAxisLabel={false}
                     />
                     <ChartCard

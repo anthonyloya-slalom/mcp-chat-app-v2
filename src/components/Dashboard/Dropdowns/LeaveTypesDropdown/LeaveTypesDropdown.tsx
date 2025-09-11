@@ -1,5 +1,6 @@
 import React from "react";
 import { MenuItem, Select, Checkbox, ListItemText } from "@mui/material";
+import { leaveTypes } from "@/lib/constants";
 import styles from "./LeaveTypesDropdown.module.css";
 
 export interface LeaveTypesDropdownProps {
@@ -7,13 +8,6 @@ export interface LeaveTypesDropdownProps {
   onChange: (value: string[]) => void;
   className?: string;
 }
-
-const leaveTypes = [
-  "Medical",
-  "Parental",
-  "Caregiver",
-  "Other",
-];
 
 export default function LeaveTypesDropdown({
   value,

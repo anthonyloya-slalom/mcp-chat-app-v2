@@ -13,3 +13,18 @@ export const percentageSummaryColors = [
   "#E083CD", // Shampoo
   "#45A8D1", // Sky
 ];
+
+export const timeRanges = [
+  "This Quarter",
+  "Current Year",
+  "Past 12 Months",
+  "All Time",
+  "Custom Range",
+];
+
+export const leaveTypes = [
+  "Medical",
+  "Parental",
+  "Caregiver",
+  "Other",
+];

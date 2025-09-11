@@ -1,5 +1,5 @@
 import React from "react";
-import { percentageSummaryColors } from "@/components/constants/colors";
+import { percentageSummaryColors } from "@/lib/constants";
 import styles from "./PercentageSummary.module.css";
 
 interface PercentageSummaryProps {

@@ -1,5 +1,6 @@
 import React from "react";
 import { MenuItem, Select } from "@mui/material";
+import { timeRanges } from "@/lib/constants";
 import styles from "./TimeRangeDropdown.module.css";
 
 export interface TimeRangeDropdownProps {
@@ -7,14 +8,6 @@ export interface TimeRangeDropdownProps {
   onChange: (value: string) => void;
   className?: string;
 }
-
-const TIME_RANGES = [
-  "This Quarter",
-  "Current Year",
-  "Past 12 Months",
-  "All Time",
-  "Custom Range",
-];
 
 export default function TimeRangeDropdown({
   value,
@@ -30,7 +23,7 @@ export default function TimeRangeDropdown({
       className={`${styles.timeRangeSelect} ${className}`}
       MenuProps={{ PaperProps: { style: { minWidth: 140 } } }}
     >
-      {TIME_RANGES.map((range) => (
+      {timeRanges.map((range) => (
         <MenuItem key={range} value={range}>
           {range}
         </MenuItem>

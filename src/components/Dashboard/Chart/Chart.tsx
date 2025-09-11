@@ -1,5 +1,5 @@
 import React from "react";
-import { colors } from "@/components/constants/colors";
+import { colors } from "@/lib/constants";
 import {
   PieChart,
   BarChart,
